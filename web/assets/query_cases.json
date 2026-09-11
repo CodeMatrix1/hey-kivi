@@ -1,0 +1,214 @@
+[
+  {
+    "id": "recall-maya-arjun",
+    "category": "Recall",
+    "title": "Family locations",
+    "message": "I am arranging a family visit. Remind me where my sister Maya and my brother Arjun are based.",
+    "expected_summary": "Pune and Bengaluru from relationship facts; no invented details.",
+    "corpus_anchors": ["hist_001", "hist_002"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["pune", "bengaluru", "maya", "arjun"]
+    }
+  },
+  {
+    "id": "recall-train-seats",
+    "category": "Recall",
+    "title": "Train seating preference",
+    "message": "What have I said about how I like to travel by train?",
+    "expected_summary": "Window-seat preference from retrieved history.",
+    "corpus_anchors": ["hist_165", "hist_173"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["window", "seat", "train"]
+    }
+  },
+  {
+    "id": "recall-travel-summary",
+    "category": "Recall",
+    "title": "Travel style summary",
+    "message": "Summarize what I have said about my travel preferences.",
+    "expected_summary": "Combine slower trips, quiet cafes, and avoiding crowded attractions where supported.",
+    "corpus_anchors": ["hist_163", "hist_164", "hist_166"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["travel", "quiet", "slow", "crowd", "cafe", "vegetarian"]
+    }
+  },
+  {
+    "id": "recall-food-prefs",
+    "category": "Recall",
+    "title": "Food preferences",
+    "message": "What food preferences have I shared?",
+    "expected_summary": "Vegetarian options and avoiding very spicy food when evidence supports it.",
+    "corpus_anchors": ["hist_164", "hist_167"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["vegetarian", "spicy", "food"]
+    }
+  },
+  {
+    "id": "prep-payments-review",
+    "category": "Prepare & polish",
+    "title": "Prepare for the payments review",
+    "message": "I have a payments team review coming up. Pull together what I have already said about the review and the presentation work, then give me the key points to bring in.",
+    "expected_summary": "Combine supported payments-review and presentation context without inventing outcomes.",
+    "corpus_anchors": ["hist_381", "hist_386"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["payment", "presentation", "review"]
+    }
+  },
+  {
+    "id": "find-polish-payments",
+    "category": "Prepare & polish",
+    "title": "Find and polish the payments note",
+    "message": "Find the dictation where I mentioned the payments team review and polish it into a concise update I can read in the meeting.",
+    "expected_summary": "Find the source dictation, then polish while preserving meaning.",
+    "corpus_anchors": ["hist_381"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["find_dictations", "polish_dictation"],
+      "reply_or_considered_must_include_any": ["payment", "review"]
+    }
+  },
+  {
+    "id": "find-by-time",
+    "category": "Find by time",
+    "title": "Find dictation from a specific time",
+    "message": "Find my dictation from August 20, 2026 around 8:10 PM about Thiruvananthapuram and polish it.",
+    "expected_summary": "Calendar date filter hits lexical_005 preference note; polish does not rewrite the teaching row itself.",
+    "corpus_anchors": ["lexical_005"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["find_dictations", "polish_dictation"],
+      "if_answer_must_select_from": ["lexical_005"],
+      "reply_must_include_any": ["thiruvananthapuram", "trivandrum"]
+    }
+  },
+  {
+    "id": "find-polish-train",
+    "category": "Prepare & polish",
+    "title": "Find and polish a train note",
+    "message": "Find my note about train seats and polish it for a travel plan.",
+    "expected_summary": "Find the window-seat preference artifact, then polish the selected note.",
+    "corpus_anchors": ["hist_165"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["find_dictations", "polish_dictation"],
+      "reply_or_considered_must_include_any": ["window", "seat", "train"]
+    }
+  },
+  {
+    "id": "polish-goa-plan",
+    "category": "Prepare & polish",
+    "title": "Polish Goa weekend planning note",
+    "message": "Polish my Goa weekend planning note for sharing with a friend.",
+    "expected_summary": "Find Goa planning dictation and polish for sharing.",
+    "corpus_anchors": ["hist_281"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["find_dictations", "polish_dictation"],
+      "reply_or_considered_must_include_any": ["goa"]
+    }
+  },
+  {
+    "id": "plan-travel-itinerary",
+    "category": "Planning",
+    "title": "Plan around travel preferences",
+    "message": "I am considering a short trip next month. Based on what I have told you about travel, what kind of itinerary would suit me?",
+    "expected_summary": "Use slower travel, quiet cafes, vegetarian options, window seats, and avoiding crowds where supported.",
+    "corpus_anchors": ["hist_163", "hist_165", "hist_164"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["travel", "quiet", "window", "vegetarian", "slow"]
+    }
+  },
+  {
+    "id": "plan-ideas-vs-booked",
+    "category": "Planning",
+    "title": "Ideas vs confirmed trips",
+    "message": "Which trips have I only considered, and which ones did I actually confirm or book?",
+    "expected_summary": "List possible destinations as ideas; say clearly when nothing is booked.",
+    "corpus_anchors": ["hist_281", "hist_282"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["goa", "jaipur", "consider", "book"]
+    }
+  },
+  {
+    "id": "plan-jaipur-prefs",
+    "category": "Planning",
+    "title": "Jaipur trip shaped by preferences",
+    "message": "I'm thinking about Jaipur — what preferences should shape that trip?",
+    "expected_summary": "Jaipur planning note plus travel and food preferences.",
+    "corpus_anchors": ["hist_282", "hist_163", "hist_164"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["jaipur", "quiet", "travel", "vegetarian"]
+    }
+  },
+  {
+    "id": "lexical-name-spell",
+    "category": "Lexical",
+    "title": "How to spell my name",
+    "message": "How should you spell my name?",
+    "expected_summary": "Aaditya from lexical teaching row.",
+    "corpus_anchors": ["lexical_001"],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["hindsight_recall"],
+      "reply_or_considered_must_include_any": ["aaditya"]
+    }
+  },
+  {
+    "id": "find-polish-trivandrum",
+    "category": "Lexical",
+    "title": "Find Trivandrum note and polish place name",
+    "message": "Find my note that mentions Trivandrum and polish it using my place-name preferences.",
+    "expected_summary": "Find hist_506 trip note (not lexical_005 teaching row); apply Trivandrum → Thiruvananthapuram.",
+    "corpus_anchors": ["hist_506", "lexical_005"],
+    "seed_lexical": [
+      {"alias": "Trivandrum", "canonical": "Thiruvananthapuram", "kind": "terminology"}
+    ],
+    "expect": {
+      "decision": "answer",
+      "tools_include": ["find_dictations", "polish_dictation"],
+      "if_answer_must_select_from": ["hist_506"],
+      "reply_must_include_any": ["thiruvananthapuram"],
+      "reply_must_not_include": ["Trivandrum"]
+    }
+  },
+  {
+    "id": "abstain-passport",
+    "category": "Abstention",
+    "title": "Unsupported personal data",
+    "message": "What is my passport number?",
+    "expected_summary": "Abstain — no supported history contains this.",
+    "corpus_anchors": [],
+    "expect": {
+      "decision": "abstain",
+      "tools_include": ["hindsight_recall"]
+    }
+  },
+  {
+    "id": "abstain-mars",
+    "category": "Abstention",
+    "title": "Unsupported topic",
+    "message": "Have I mentioned the Mars colony habitat budget?",
+    "expected_summary": "Abstain — topic not in corpus.",
+    "corpus_anchors": [],
+    "expect": {
+      "decision": "abstain",
+      "tools_include": ["hindsight_recall"]
+    }
+  }
+]

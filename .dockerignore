@@ -1,0 +1,64 @@
+# Build context: hindsight_pipeline_2/ (see docker-compose.yml + ops/docker/Dockerfile)
+# Goal: keep pip layer cached; exclude secrets, volumes, tests, and large artifacts.
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Git / CI / IDE
+.git
+.gitignore
+.gitattributes
+.github
+.vscode
+.idea
+.cursor
+
+# Python caches (not needed in image)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Mounted at runtime — do not bake into image
+artifacts/runtime/
+artifacts/reports/
+artifacts/evals/
+
+# Baseline tarballs (Path A restore; not needed inside app image)
+ops/baseline-volumes/*.tar.gz
+
+# Corpus JSONL mounted read-only in compose
+data/corpus/
+
+# Docs — not needed to run API (evals/ included for optional in-container pytest)
+docs/
+
+# Dev / stray databases
+**/*.sqlite3
+**/*.sqlite3-journal
+data/*.sqlite3
+
+# OS junk
+.DS_Store
+Thumbs.db
+*.log
+logs/
+
+# Docker meta (compose builds from host)
+docker-compose.yml
+ops/docker/docker-compose.yml

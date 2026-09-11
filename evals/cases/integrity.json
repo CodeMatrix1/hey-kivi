@@ -1,0 +1,176 @@
+[
+  {
+    "id": "clean_start",
+    "description": "A reset user has no memories via memory.recall / list_memories.",
+    "type": "clean_start",
+    "user_id": "integrity_clean_start",
+    "query": "unique integrity clean-start marker orbital-chess"
+  },
+  {
+    "id": "seed_retain_recall_round_trip",
+    "description": "retain_typed then recall returns the seeded memory id/text.",
+    "type": "seed_retain_recall_round_trip",
+    "user_id": "integrity_round_trip",
+    "memory": {
+      "id": "integrity_hobby_memory",
+      "content": "The integrity test user has a unique favorite hobby: orbital chess."
+    },
+    "query": "What is the integrity test user's unique favorite hobby?"
+  },
+  {
+    "id": "cross_user_isolation",
+    "description": "Memory retained for user A is not recalled for user B.",
+    "type": "cross_user_isolation",
+    "user_a": "integrity_iso_a",
+    "user_b": "integrity_iso_b",
+    "memory": {
+      "id": "user_a_private_token",
+      "content": "User A's private integrity token is blue-orchid-739."
+    },
+    "query": "What is the private integrity token blue-orchid?"
+  },
+  {
+    "id": "cleanup_removes_memory",
+    "description": "memory.reset removes a retain_typed seed from recall.",
+    "type": "cleanup_removes_memory",
+    "user_id": "integrity_cleanup",
+    "memory": {
+      "id": "cleanup_marker",
+      "content": "The cleanup integrity marker is amber-comet-812."
+    },
+    "query": "What is the cleanup integrity marker amber-comet?"
+  },
+  {
+    "id": "memory_reset",
+    "description": "Reset clears every retain_typed memory for a user.",
+    "type": "memory_reset",
+    "user_id": "integrity_reset",
+    "memories": [
+      {
+        "id": "reset_one",
+        "content": "The first reset integrity marker is quartz-harbor-305."
+      },
+      {
+        "id": "reset_two",
+        "content": "The second reset integrity marker is velvet-cosmos-918."
+      }
+    ],
+    "query": "reset integrity markers quartz velvet"
+  },
+  {
+    "id": "persistence_across_agent_restart",
+    "description": "A new HeyKiviAgent sharing the same backend still recalls retain_typed data.",
+    "type": "persistence_across_agent_restart",
+    "user_id": "integrity_persist",
+    "memory": {
+      "id": "persist_marker",
+      "content": "The persistence integrity marker is silver-lantern-456."
+    },
+    "query": "What is the persistence integrity marker silver-lantern?"
+  },
+  {
+    "id": "lexical_validation_precision",
+    "description": "Validator keeps explicit mappings and drops invented / incomplete ones.",
+    "type": "lexical_validation_precision",
+    "messages": [
+      {
+        "text": "hello there, how are you?",
+        "expect_mappings": 0,
+        "scripted_lexical": { "mappings": [] }
+      },
+      {
+        "text": "My name is Aaditya, not Aditya.",
+        "expect_mappings": 1,
+        "scripted_lexical": {
+          "mappings": [
+            { "alias": "Aditya", "canonical": "Aaditya", "kind": "name" }
+          ]
+        }
+      },
+      {
+        "text": "I prefer Python over Java.",
+        "expect_mappings": 0,
+        "scripted_lexical": { "mappings": [] }
+      },
+      {
+        "text": "Adithya sent me the code.",
+        "expect_mappings": 0,
+        "scripted_lexical": {
+          "mappings": [
+            { "alias": "Adithya", "canonical": "Aaditya", "kind": "name" }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "learn_lexical_mapping",
+    "description": "chat upserts LexicalMapping via extract → validate → store.",
+    "type": "learn_lexical_mapping",
+    "user_id": "integrity_learn_lex",
+    "message": "My name is Aaditya, not Aditya.",
+    "scripted_lexical": {
+      "mappings": [
+        { "alias": "Aditya", "canonical": "Aaditya", "kind": "name" }
+      ]
+    }
+  },
+  {
+    "id": "never_learn_from_kivi_reply",
+    "description": "HeyKiviAgent.chat must not create lexical mappings from assistant output.",
+    "type": "never_learn_from_kivi_reply",
+    "user_id": "integrity_no_kivi_learn",
+    "message": "hello there"
+  },
+  {
+    "id": "find_dictations_pipeline",
+    "description": "tools.find_dictations returns the seeded Slack note.",
+    "type": "find_dictations_pipeline",
+    "user_id": "integrity_find",
+    "dictation": {
+      "id": "d_integrity_slack",
+      "asr": "remind team about api rate limits",
+      "formatted": "Remind the team about API rate limits.",
+      "created_at": "2026-09-04T17:03:00+00:00"
+    },
+    "find": {
+      "text_query": "api rate limits"
+    }
+  },
+  {
+    "id": "polish_dictation_pipeline",
+    "description": "polish_dictation applies SQLite lexical resolver Aditya→Aaditya.",
+    "type": "polish_dictation_pipeline",
+    "user_id": "integrity_polish",
+    "dictation": {
+      "id": "d_integrity_polish",
+      "asr": "ask aditya to review",
+      "formatted": "Ask Aditya to review the PR.",
+      "created_at": "2026-09-04T17:03:00+00:00"
+    },
+    "lexical": {
+      "alias": "Aditya",
+      "canonical": "Aaditya",
+      "kind": "name"
+    },
+    "occasion": "meeting"
+  },
+  {
+    "id": "chat_uses_find_and_polish",
+    "description": "HeyKiviAgent.chat traces find+polish and applies lexical mapping.",
+    "type": "chat_uses_find_and_polish",
+    "user_id": "integrity_chat_tools",
+    "dictation": {
+      "id": "d_integrity_chat",
+      "asr": "remind aditya about launch",
+      "formatted": "Remind Aditya about launch.",
+      "created_at": "2026-09-04T17:03:00+00:00"
+    },
+    "lexical": {
+      "alias": "Aditya",
+      "canonical": "Aaditya",
+      "kind": "name"
+    },
+    "message": "Find my Slack dictation about API rate limits and polish it for the meeting."
+  }
+]

@@ -1,0 +1,7 @@
+[project]
+name = "hey-kivi"
+version = "0.1.0"
+description = "Hey Kivi Phase 1 — Golden Goose submission"
+requires-python = ">=3.11"
+readme = "README.md"
+# Pytest config: pytest.ini (pythonpath = .. for `cd hindsight_pipeline_2 && pytest`)

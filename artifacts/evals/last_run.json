@@ -1,0 +1,728 @@
+{
+  "generated_at": "2026-09-11T13:21:32+00:00",
+  "backend": "stub",
+  "total": 8,
+  "passed": 8,
+  "failed": 0,
+  "pass_rate": 1.0,
+  "by_category": {
+    "retrieval": {
+      "passed": 2,
+      "failed": 0,
+      "total": 2
+    },
+    "polish": {
+      "passed": 1,
+      "failed": 0,
+      "total": 1
+    },
+    "abstain": {
+      "passed": 3,
+      "failed": 0,
+      "total": 3
+    },
+    "learning": {
+      "passed": 2,
+      "failed": 0,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "id": "paraphrase-cross-recall",
+      "description": "Ask about 'Kivi meeting' \u2014 memories must not contain that phrase; Hindsight recall should still surface related Facts/Episodes.",
+      "category": "retrieval",
+      "user_id": "eval_paraphrase",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "What have I been working on for the Kivi meeting?",
+          "passed": true,
+          "failures": [],
+          "reply": "Here's what I found in your memories related to that:\n- [Fact] Backend auth refactor for next week's product sync.\n- [Episode] Slack dump about API rate limits with Aaditya.",
+          "trace": {
+            "wants_dictation": false,
+            "wants_cross_recall": true,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [],
+            "semantic_retain": true,
+            "semantic_retain_preview": "What have I been working on for the Kivi meeting?",
+            "memories_considered": [
+              {
+                "id": "f_backend_auth",
+                "type": "Fact",
+                "text": "Backend auth refactor for next week's product sync."
+              },
+              {
+                "id": "e_rate_limits",
+                "type": "Episode",
+                "text": "Slack dump about API rate limits with Aaditya."
+              }
+            ],
+            "retrieval_backend": "hindsight",
+            "retrieval_query": "What have I been working on for the Kivi meeting?",
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": null,
+            "source_dictation_id": "d_chat_i_16558d09a150",
+            "source_interactions": [
+              "i_16558d09a150"
+            ],
+            "tools_used": [
+              "hindsight_recall"
+            ],
+            "decision": "answer",
+            "reason": "Cross-recall: synthesized from 2 Hindsight memories (Fact/Preference/Episode when typed).",
+            "canonicalized_message": "What have I been working on for the Kivi meeting?",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": false,
+                  "wants_cross_recall": true
+                }
+              },
+              {
+                "step": "synthesize",
+                "source": "fallback",
+                "output": "Here's what I found in your memories related to that:\n- [Fact] Backend auth refactor for next week's product sync.\n- [Episode] Slack dump about API rate limits with Aaditya."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "find-polish-lexical",
+      "description": "Find the API-rate-limit Slack dictation and apply Aditya\u2192Aaditya from SQLite lexical store.",
+      "category": "polish",
+      "user_id": "eval_polish",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "Find my Slack dictation about API rate limits and polish it for the meeting.",
+          "passed": true,
+          "failures": [],
+          "reply": "I used your note from Friday, September 4, 2026 at 17:03 UTC.\n\nRemind the team about API rate limits with Aaditya before launch.",
+          "trace": {
+            "wants_dictation": true,
+            "wants_cross_recall": false,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [
+              {
+                "observed": "Aditya",
+                "preferred": "Aaditya",
+                "kind": "name"
+              }
+            ],
+            "semantic_retain": true,
+            "semantic_retain_preview": "Find my Slack dictation about API rate limits and polish it for the meeting.",
+            "memories_considered": [
+              {
+                "id": "dict_d_chat_i_446e438727b8",
+                "type": "Memory",
+                "text": "Find my Slack dictation about API rate limits and polish it for the meeting.",
+                "source_dictation_id": "d_chat_i_446e438727b8"
+              },
+              {
+                "id": "e_rate_limits",
+                "type": "Episode",
+                "text": "Slack dump about API rate limits with Aaditya."
+              }
+            ],
+            "retrieval_backend": "hindsight",
+            "retrieval_query": "meeting Remind the team about API rate limits with Aditya before launch.",
+            "candidates": [
+              {
+                "id": "d_slack_1700",
+                "score": 0.75,
+                "evidence": [
+                  "fts"
+                ],
+                "created_at": "2026-09-04T17:03:00+00:00",
+                "formatted_preview": "Remind the team about API rate limits with Aditya before launch."
+              }
+            ],
+            "selected_dictation_id": "d_slack_1700",
+            "find_query": {
+              "text_query": "api rate limits",
+              "date_start": null,
+              "date_end": null,
+              "occasion": "meeting"
+            },
+            "source_dictation_id": "d_chat_i_446e438727b8",
+            "source_interactions": [
+              "i_446e438727b8"
+            ],
+            "tools_used": [
+              "find_dictations",
+              "polish_dictation"
+            ],
+            "decision": "answer",
+            "reason": "Selected and polished one relevant dictation.",
+            "canonicalized_message": "Find my Slack dictation about API rate limits and polish it for the meeting.",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": true,
+                  "wants_cross_recall": false
+                }
+              },
+              {
+                "step": "polish",
+                "source": "skipped",
+                "output": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambiguous-dictation-abstain",
+      "description": "Vague find request with multiple Slack notes should abstain, not invent.",
+      "category": "abstain",
+      "user_id": "eval_ambiguous",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "Find my Slack dictation.",
+          "passed": true,
+          "failures": [],
+          "reply": "I used these relevant notes:\n\n### Friday, September 4, 2026 at 17:03 UTC\n\nRemind the team about API rate limits with Aaditya before launch.\n\n### Friday, September 4, 2026 at 12:05 UTC\n\nQuick standup update on charts.",
+          "trace": {
+            "wants_dictation": true,
+            "wants_cross_recall": false,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [
+              {
+                "observed": "Aditya",
+                "preferred": "Aaditya",
+                "kind": "name"
+              }
+            ],
+            "semantic_retain": true,
+            "semantic_retain_preview": "Find my Slack dictation.",
+            "memories_considered": [
+              {
+                "id": "e_rate_limits",
+                "type": "Episode",
+                "text": "Slack dump about API rate limits with Aaditya."
+              },
+              {
+                "id": "f_backend_auth",
+                "type": "Fact",
+                "text": "Backend auth refactor for next week's product sync."
+              },
+              {
+                "id": "dict_d_chat_i_bea801d9dfbc",
+                "type": "Memory",
+                "text": "Find my Slack dictation.",
+                "source_dictation_id": "d_chat_i_bea801d9dfbc"
+              }
+            ],
+            "retrieval_backend": "hindsight",
+            "retrieval_query": "general cleanup Remind the team about API rate limits with Aditya before launch.",
+            "candidates": [
+              {
+                "id": "d_slack_1700",
+                "score": 0.2,
+                "evidence": [
+                  "recency"
+                ],
+                "created_at": "2026-09-04T17:03:00+00:00",
+                "formatted_preview": "Remind the team about API rate limits with Aditya before launch."
+              },
+              {
+                "id": "d_slack_1200",
+                "score": 0.2,
+                "evidence": [
+                  "recency"
+                ],
+                "created_at": "2026-09-04T12:05:00+00:00",
+                "formatted_preview": "Quick standup update on charts."
+              }
+            ],
+            "selected_dictation_id": "d_slack_1700",
+            "find_query": {
+              "text_query": "",
+              "date_start": null,
+              "date_end": null,
+              "occasion": null
+            },
+            "source_dictation_id": "d_chat_i_bea801d9dfbc",
+            "source_interactions": [
+              "i_bea801d9dfbc"
+            ],
+            "tools_used": [
+              "find_dictations",
+              "select_dictation_candidate",
+              "polish_dictation"
+            ],
+            "decision": "answer",
+            "reason": "Polished 2 relevant dictation(s) (multiple top-tier matches; no single winner required).",
+            "canonicalized_message": "Find my Slack dictation.",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": true,
+                  "wants_cross_recall": false
+                }
+              },
+              {
+                "step": "select_dictation_candidate",
+                "source": "skipped",
+                "output": null
+              },
+              {
+                "step": "polish",
+                "source": "skipped",
+                "output": null
+              },
+              {
+                "step": "polish",
+                "source": "skipped",
+                "output": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "learn-lexical-mapping",
+      "description": "Explicit spelling correction should upsert a LexicalMapping.",
+      "category": "learning",
+      "user_id": "eval_learn_lex",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "My name is Aaditya, not Aditya.",
+          "passed": true,
+          "failures": [],
+          "reply": "Got it \u2014 I'll use 'Aaditya' instead of 'Aditya'.\n\nHow can I help you?",
+          "trace": {
+            "wants_dictation": false,
+            "wants_cross_recall": false,
+            "memories_retained": [
+              {
+                "type": "LexicalMapping",
+                "alias": "Aditya",
+                "canonical": "Aaditya",
+                "kind": "name",
+                "id": "lex_bdba84075e8a",
+                "text": "Aditya \u2192 Aaditya"
+              }
+            ],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [
+              {
+                "observed": "Aditya",
+                "preferred": "Aaditya",
+                "kind": "name"
+              }
+            ],
+            "semantic_retain": true,
+            "semantic_retain_preview": "My name is Aaditya, not Aaditya.",
+            "memories_considered": [],
+            "retrieval_backend": "none",
+            "retrieval_query": null,
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": null,
+            "source_dictation_id": "d_chat_i_f3b67921e024",
+            "source_interactions": [
+              "i_f3b67921e024"
+            ],
+            "tools_used": [],
+            "decision": "answer",
+            "reason": "General chat; no LLM \u2014 fallback.",
+            "canonicalized_message": "My name is Aaditya, not Aaditya.",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": [
+                    {
+                      "alias": "Aditya",
+                      "canonical": "Aaditya",
+                      "kind": "name"
+                    }
+                  ]
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": false,
+                  "wants_cross_recall": false
+                }
+              },
+              {
+                "step": "general_chat",
+                "source": "fallback",
+                "output": "How can I help you?"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ignore-smalltalk-lexical",
+      "description": "Greeting must not create lexical mappings (semantic retain may still run).",
+      "category": "learning",
+      "user_id": "eval_ignore_smalltalk",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "hello there, how are you?",
+          "passed": true,
+          "failures": [],
+          "reply": "How can I help you?",
+          "trace": {
+            "wants_dictation": false,
+            "wants_cross_recall": false,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [],
+            "semantic_retain": true,
+            "semantic_retain_preview": "hello there, how are you?",
+            "memories_considered": [],
+            "retrieval_backend": "none",
+            "retrieval_query": null,
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": null,
+            "source_dictation_id": "d_chat_i_52cffb96453a",
+            "source_interactions": [
+              "i_52cffb96453a"
+            ],
+            "tools_used": [],
+            "decision": "answer",
+            "reason": "General chat; no LLM \u2014 fallback.",
+            "canonicalized_message": "hello there, how are you?",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": false,
+                  "wants_cross_recall": false
+                }
+              },
+              {
+                "step": "general_chat",
+                "source": "fallback",
+                "output": "How can I help you?"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "abstain-empty-history",
+      "description": "Cross-recall with empty bank should abstain.",
+      "category": "abstain",
+      "user_id": "eval_abstain_empty",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "What have I been working on for the Kivi meeting?",
+          "passed": true,
+          "failures": [],
+          "reply": "I don't have enough in your history to say what you've been working on for that.",
+          "trace": {
+            "wants_dictation": false,
+            "wants_cross_recall": true,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [],
+            "semantic_retain": true,
+            "semantic_retain_preview": "What have I been working on for the Kivi meeting?",
+            "memories_considered": [],
+            "retrieval_backend": "hindsight",
+            "retrieval_query": "What have I been working on for the Kivi meeting?",
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": null,
+            "source_dictation_id": "d_chat_i_13f0c722809a",
+            "source_interactions": [
+              "i_13f0c722809a"
+            ],
+            "tools_used": [
+              "hindsight_recall"
+            ],
+            "decision": "abstain",
+            "reason": "No relevant durable memories for cross-recall.",
+            "canonicalized_message": "What have I been working on for the Kivi meeting?",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": false,
+                  "wants_cross_recall": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "retain-then-recall",
+      "description": "User statement is retained to Hindsight; paraphrase recall surfaces it.",
+      "category": "retrieval",
+      "user_id": "eval_learn_recall",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "I am working on the payment reconciliation service.",
+          "passed": true,
+          "failures": [],
+          "reply": "How can I help you?",
+          "trace": {
+            "wants_dictation": false,
+            "wants_cross_recall": false,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [],
+            "semantic_retain": true,
+            "semantic_retain_preview": "I am working on the payment reconciliation service.",
+            "memories_considered": [],
+            "retrieval_backend": "none",
+            "retrieval_query": null,
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": null,
+            "source_dictation_id": "d_chat_i_9bafa786df50",
+            "source_interactions": [
+              "i_9bafa786df50"
+            ],
+            "tools_used": [],
+            "decision": "answer",
+            "reason": "General chat; no LLM \u2014 fallback.",
+            "canonicalized_message": "I am working on the payment reconciliation service.",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": false,
+                  "wants_cross_recall": false
+                }
+              },
+              {
+                "step": "general_chat",
+                "source": "fallback",
+                "output": "How can I help you?"
+              }
+            ]
+          }
+        },
+        {
+          "index": 1,
+          "message": "What did I say about payment reconciliation?",
+          "passed": true,
+          "failures": [],
+          "reply": "Here's what I found in your memories related to that:\n- [Memory] I am working on the payment reconciliation service.",
+          "trace": {
+            "wants_dictation": false,
+            "wants_cross_recall": true,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [],
+            "semantic_retain": true,
+            "semantic_retain_preview": "What did I say about payment reconciliation?",
+            "memories_considered": [
+              {
+                "id": "dict_d_chat_i_9bafa786df50",
+                "type": "Memory",
+                "text": "I am working on the payment reconciliation service.",
+                "source_dictation_id": "d_chat_i_9bafa786df50"
+              }
+            ],
+            "retrieval_backend": "hindsight",
+            "retrieval_query": "What did I say about payment reconciliation?",
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": null,
+            "source_dictation_id": "d_chat_i_3caa5dc8b730",
+            "source_interactions": [
+              "i_3caa5dc8b730"
+            ],
+            "tools_used": [
+              "hindsight_recall"
+            ],
+            "decision": "answer",
+            "reason": "Cross-recall: synthesized from 1 Hindsight memories (Fact/Preference/Episode when typed).",
+            "canonicalized_message": "What did I say about payment reconciliation?",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": false,
+                  "wants_cross_recall": true
+                }
+              },
+              {
+                "step": "synthesize",
+                "source": "fallback",
+                "output": "Here's what I found in your memories related to that:\n- [Memory] I am working on the payment reconciliation service."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "no-dictation-match-abstain",
+      "description": "Find with impossible filters should abstain.",
+      "category": "abstain",
+      "user_id": "eval_no_dictation",
+      "passed": true,
+      "failures": [],
+      "turns": [
+        {
+          "index": 0,
+          "message": "Find my Telegram dictation from 3am about quantum physics.",
+          "passed": true,
+          "failures": [],
+          "reply": "I couldn't find a dictation matching that. Try another date or search terms.",
+          "trace": {
+            "wants_dictation": true,
+            "wants_cross_recall": false,
+            "memories_retained": [],
+            "memories_ignored": [],
+            "memories_updated": [],
+            "applied_preferences": [],
+            "semantic_retain": true,
+            "semantic_retain_preview": "Find my Telegram dictation from 3am about quantum physics.",
+            "memories_considered": [],
+            "retrieval_backend": "none",
+            "retrieval_query": null,
+            "candidates": [],
+            "selected_dictation_id": null,
+            "find_query": {
+              "text_query": "telegram quantum physics",
+              "date_start": null,
+              "date_end": null,
+              "occasion": null
+            },
+            "source_dictation_id": "d_chat_i_dc28d38cde38",
+            "source_interactions": [
+              "i_dc28d38cde38"
+            ],
+            "tools_used": [
+              "find_dictations"
+            ],
+            "decision": "abstain",
+            "reason": "No matching dictations.",
+            "canonicalized_message": "Find my Telegram dictation from 3am about quantum physics.",
+            "llm_calls": [
+              {
+                "step": "lexical_extract",
+                "source": "llm",
+                "output": {
+                  "mappings": []
+                }
+              },
+              {
+                "step": "interpret",
+                "source": "rules",
+                "output": {
+                  "wants_dictation": true,
+                  "wants_cross_recall": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

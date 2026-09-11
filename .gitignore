@@ -1,0 +1,67 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Runtime SQLite (Docker volume / local dev)
+artifacts/runtime/*
+!artifacts/runtime/.gitkeep
+**/*.sqlite3
+**/*.sqlite3-journal
+
+# Generated eval output (pin submission artifact)
+artifacts/evals/*
+!artifacts/evals/.gitkeep
+!artifacts/evals/last_run.json
+
+# Generated ingest reports (pin submission artifact)
+artifacts/reports/*
+!artifacts/reports/.gitkeep
+!artifacts/reports/kivi_corpus_500_history.latest.json
+!artifacts/reports/query_probe.latest.json
+
+# Legacy / stray paths (pre-restructure)
+corpus/reports/
+evals/artifacts/
+static/
+scripts/
+/baseline-volumes/
+data/*.sqlite3
+
+# Path A baseline tarballs — commit ops/baseline-volumes/*.tar.gz
+!ops/baseline-volumes/
+!ops/baseline-volumes/README.md
+!ops/baseline-volumes/*.tar.gz
+
+# Logs
+*.log
+logs/

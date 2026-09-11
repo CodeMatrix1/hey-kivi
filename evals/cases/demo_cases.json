@@ -1,0 +1,171 @@
+[
+  {
+    "id": "paraphrase-cross-recall",
+    "description": "Ask about 'Kivi meeting' — memories must not contain that phrase; Hindsight recall should still surface related Facts/Episodes.",
+    "category": "retrieval",
+    "user_id": "eval_paraphrase",
+    "setup": { "use_demo_seed": true },
+    "turns": [
+      {
+        "message": "What have I been working on for the Kivi meeting?",
+        "expect": {
+          "decision": "answer",
+          "tools_include": ["hindsight_recall"],
+          "retrieval_backend_in": ["hindsight"],
+          "memories_considered_min": 1,
+          "reply_or_considered_must_include_any": ["auth", "backend", "rate", "aaditya", "refactor"],
+          "seed_memories_must_not_contain": ["kivi meeting"],
+          "paraphrase_required": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "find-polish-lexical",
+    "description": "Find the API-rate-limit Slack dictation and apply Aditya→Aaditya from SQLite lexical store.",
+    "category": "polish",
+    "user_id": "eval_polish",
+    "setup": { "use_demo_seed": true },
+    "turns": [
+      {
+        "message": "Find my Slack dictation about API rate limits and polish it for the meeting.",
+        "expect": {
+          "decision": "answer",
+          "tools_include": ["find_dictations", "polish_dictation"],
+          "selected_dictation_id": "d_slack_1700",
+          "reply_must_include": ["Aaditya"],
+          "reply_must_not_include": ["with Aditya"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "ambiguous-dictation-abstain",
+    "description": "Vague find request with multiple Slack notes should abstain, not invent.",
+    "category": "abstain",
+    "user_id": "eval_ambiguous",
+    "setup": { "use_demo_seed": true },
+    "turns": [
+      {
+        "message": "Find my Slack dictation.",
+        "expect": {
+          "decision_in": ["abstain", "answer"],
+          "tools_include": ["find_dictations"],
+          "if_answer_must_select_from": ["d_slack_1700", "d_slack_1200"],
+          "reply_must_not_include": ["I invented", "made up"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "learn-lexical-mapping",
+    "description": "Explicit spelling correction should upsert a LexicalMapping.",
+    "category": "learning",
+    "user_id": "eval_learn_lex",
+    "setup": {
+      "use_demo_seed": false,
+      "dictations": [],
+      "memories": [],
+      "scripted_lexical": {
+        "mappings": [
+          {"alias": "Aditya", "canonical": "Aaditya", "kind": "name"}
+        ]
+      }
+    },
+    "turns": [
+      {
+        "message": "My name is Aaditya, not Aditya.",
+        "expect": {
+          "memories_retained_min": 1,
+          "retained_types_include": ["LexicalMapping"],
+          "reply_must_include_any": ["Got it", "Aaditya"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "ignore-smalltalk-lexical",
+    "description": "Greeting must not create lexical mappings (semantic retain may still run).",
+    "category": "learning",
+    "user_id": "eval_ignore_smalltalk",
+    "setup": {
+      "use_demo_seed": false,
+      "dictations": [],
+      "memories": []
+    },
+    "turns": [
+      {
+        "message": "hello there, how are you?",
+        "expect": {
+          "memories_retained_max": 0,
+          "decision_in": ["answer", "abstain"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "abstain-empty-history",
+    "description": "Cross-recall with empty bank should abstain.",
+    "category": "abstain",
+    "user_id": "eval_abstain_empty",
+    "setup": {
+      "use_demo_seed": false,
+      "dictations": [],
+      "memories": []
+    },
+    "turns": [
+      {
+        "message": "What have I been working on for the Kivi meeting?",
+        "expect": {
+          "decision": "abstain",
+          "tools_include": ["hindsight_recall"],
+          "reply_must_include_any": ["don't have", "enough", "history", "couldn't"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "retain-then-recall",
+    "description": "User statement is retained to Hindsight; paraphrase recall surfaces it.",
+    "category": "retrieval",
+    "user_id": "eval_learn_recall",
+    "setup": {
+      "use_demo_seed": false,
+      "dictations": [],
+      "memories": []
+    },
+    "turns": [
+      {
+        "message": "I am working on the payment reconciliation service.",
+        "expect": {
+          "decision_in": ["answer", "abstain"]
+        }
+      },
+      {
+        "message": "What did I say about payment reconciliation?",
+        "expect": {
+          "decision": "answer",
+          "tools_include": ["hindsight_recall"],
+          "reply_or_considered_must_include_any": ["payment", "reconciliation"]
+        }
+      }
+    ]
+  },
+  {
+    "id": "no-dictation-match-abstain",
+    "description": "Find with impossible filters should abstain.",
+    "category": "abstain",
+    "user_id": "eval_no_dictation",
+    "setup": { "use_demo_seed": true },
+    "turns": [
+      {
+        "message": "Find my Telegram dictation from 3am about quantum physics.",
+        "expect": {
+          "decision_in": ["abstain"],
+          "tools_include": ["find_dictations"],
+          "selected_dictation_id_null": true
+        }
+      }
+    ]
+  }
+]

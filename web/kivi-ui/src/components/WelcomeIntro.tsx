@@ -16,6 +16,11 @@ const FEATURES = [
     detail:
       'Include remind plus today, tomorrow, a date, or a time — e.g. "remind me tomorrow at 8pm to call Maya." I\'ll confirm before saving; upcoming ones show in the sidebar.',
   },
+  {
+    title: "Topics",
+    detail:
+      "Track decisions and open questions by topic. Create one in the sidebar, mention a topic name in chat to get a save prompt, or use ⋮ on a message to add a note.",
+  },
 ] as const;
 
 export function WelcomeIntro() {

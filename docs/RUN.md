@@ -96,13 +96,36 @@ Product surfaces:
 | Surface | Storage | Notes |
 |---------|---------|--------|
 | **Chats** | Browser `localStorage` | Multi-turn threads; optional demo seed from `web/assets/demo_chats.json` |
+| **Topics** | Browser `localStorage` | Curated notes + conversation refs; optional demo seed from same file |
 | **History** | Server SQLite | Dictations; add text notes via UI or `POST /dictations/{user_id}` |
 | **Reminders** | Browser `localStorage` | Client-side; message must include **remind** + date/time |
 | **Personalization** | Server SQLite | Lexical preferences + learning feed |
-| **Settings** | — | User id, load/clear demo chats, developer tools link |
+| **Settings** | — | User id, load/clear demo data, developer tools link |
 | **Developer tools** | — | Query library (`query_cases.json`), traces, metrics (`?dev=1`) |
 
-**Demo chat seed:** edit `web/assets/demo_chats.json` (schema: `web/assets/DEMO_CHATS.md`). Loads automatically when sidebar is empty, or use **Settings → Load demo chats**, or `?seed_chats=1`. UI-only — does not ingest into Hindsight; pair with Path A baseline for recall.
+### Load demo chats (sidebar seed)
+
+Demo **conversations** and **topics** load from `web/assets/demo_chats.json` into browser `localStorage`. They are **UI-only** — nothing is written to SQLite or Hindsight. Pair sidebar demos with Path A baseline (`golden_goose_eval_user`) when you want assistant recall to match server memories.
+
+**File:** `web/assets/demo_chats.json` (served at `/static/assets/demo_chats.json`). Schema and examples: `web/assets/DEMO_CHATS.md`.
+
+**When data loads:**
+
+| Trigger | Mode | Behavior |
+|---------|------|----------|
+| First visit, empty sidebar | `replace_empty` | Imports all seed conversations and topics if localStorage has none |
+| **Settings → Load demo chats** | `merge` | Adds seed items whose ids are not already present; skips duplicates |
+| URL `?seed_chats=1` on page load | `merge` | Same as Settings button (handy after editing the JSON) |
+
+**Fresh reload after editing the seed file:**
+
+1. Rebuild UI if you changed frontend code: `cd web/kivi-ui && npm run build` (Docker rebuild if using compose).
+2. **Settings → Clear all chats and topics** (or clear site data for the origin).
+3. Reload with `http://localhost:8002/?seed_chats=1` **or** open Settings → **Load demo chats**.
+
+**Included demo (v2):** family recall, travel preferences, payments review, lexical polish, reminder prep, and a **Slack integration** thread with a matching **Slack integration** topic (decision / context / open notes linked to source messages).
+
+**Topics workflow (manual):** open a chat → ⋮ on a user message → **Add to topic**; or create topics from the sidebar **+ New topic**. Approving a note links the source conversation as a reference only (no message copy).
 
 `KIVI_CHAT` defaults to `false` for review (see `.env.example`). Verify: `GET /health` → `"kivi_chat": false`. Set `KIVI_CHAT=true` to retain substantive live chat to Hindsight (not dictation rows).
 
@@ -266,9 +289,9 @@ docker compose --env-file .env exec hey-kivi \
 # Query library (developer tools)
 python -m hindsight_pipeline_2.evals.sync_cases   # evals/cases/query_cases.json → web/assets/
 
-# Demo sidebar chats — edit web/assets/demo_chats.json directly, then rebuild if needed:
-cd web/kivi-ui && npm run build
-# Reload browser; use ?seed_chats=1 or Settings → Load demo chats to merge
+# Demo sidebar seed (chats + topics) — edit web/assets/demo_chats.json, then:
+cd web/kivi-ui && npm run build   # if UI code changed; restart compose if using Docker
+# Settings → Clear all chats and topics → reload with ?seed_chats=1 or Settings → Load demo chats
 ```
 
 ---
@@ -366,7 +389,7 @@ docker compose --env-file .env down -v
 4. `curl localhost:8002/health` → `curl localhost:8002/stats/golden_goose_eval_user`
 5. Open http://localhost:8002 — confirm kivi-ui (sidebar chats/history/reminders)
 6. Three chat probes (§6) with `golden_goose_eval_user` (curl or UI)
-7. Optional: demo sidebar chats from `demo_chats.json` (auto on empty sidebar)
+7. Optional: **Load demo chats** — seed sidebar conversations + topics from `demo_chats.json` (auto on empty sidebar; see §3 *Load demo chats*)
 8. Optional Path B: import as `corpus_repro_user` (§8) — never into `golden_goose_eval_user`
 9. Optional Docker evals (§7c): `runner --backend hindsight`, `query_probe`
 10. `docker compose down -v`

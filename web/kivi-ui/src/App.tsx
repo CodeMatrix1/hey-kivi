@@ -15,6 +15,7 @@ import { ReminderRail } from "./components/ReminderRail";
 import { ReminderToast } from "./components/ReminderToast";
 import { RemindersView } from "./components/RemindersView";
 import { SettingsView } from "./components/SettingsView";
+import { TopicView } from "./components/TopicView";
 import { AppNav } from "./components/AppNav";
 import { Sidebar, type NavView } from "./components/Sidebar";
 import { useReminderChecker } from "./hooks/useReminderChecker";
@@ -26,12 +27,21 @@ import {
 } from "./storage/conversations";
 import { loadAndImportDemoChats } from "./storage/demoChats";
 import { deleteReminder, listReminders } from "./storage/reminders";
+import {
+  clearAllTopics,
+  createTopic,
+  deleteTopic,
+  getTopic,
+  listTopics,
+  updateTopicName,
+} from "./storage/topics";
 import type {
   AppView,
   Conversation,
   Dictation,
   PendingDictationContext,
   QueryCase,
+  Topic,
 } from "./types";
 
 const USER_ID_KEY = "kivi_user_id_v1";
@@ -55,6 +65,11 @@ export default function App() {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [queryCases, setQueryCases] = useState<QueryCase[]>([]);
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
+  const [activeTopicId, setActiveTopicId] = useState<string | null>(null);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [chatScrollToMessageId, setChatScrollToMessageId] = useState<string | null>(
+    null,
+  );
   const [activeReminderId, setActiveReminderId] = useState<string | null>(null);
   const [reminders, setReminders] = useState(() => listReminders());
   const [showAddReminder, setShowAddReminder] = useState(false);
@@ -72,6 +87,10 @@ export default function App() {
 
   const refreshConversations = useCallback(() => {
     setConversations(listConversations());
+  }, []);
+
+  const refreshTopics = useCallback(() => {
+    setTopics(listTopics());
   }, []);
 
   const refreshReminders = useCallback(() => {
@@ -102,19 +121,31 @@ export default function App() {
       try {
         const result = await loadAndImportDemoChats(getDemoChatsFile, mode);
         refreshConversations();
-        if (result.imported === 0 && result.skipped === 0) {
-          setDemoChatsMessage("Demo chats file has no conversations yet.");
-        } else if (result.imported === 0) {
-          setDemoChatsMessage(
-            mode === "replace_empty"
-              ? "Skipped — you already have conversations saved."
-              : `No new chats imported (${result.skipped} already present).`,
+        refreshTopics();
+        const parts: string[] = [];
+        if (result.imported > 0) {
+          parts.push(
+            `${result.imported} chat${result.imported === 1 ? "" : "s"}`,
           );
+        }
+        if (result.topicsImported > 0) {
+          parts.push(
+            `${result.topicsImported} topic${result.topicsImported === 1 ? "" : "s"}`,
+          );
+        }
+        if (parts.length > 0) {
+          const skipped =
+            result.skipped + result.topicsSkipped > 0
+              ? ` (${result.skipped + result.topicsSkipped} skipped)`
+              : "";
+          setDemoChatsMessage(`Loaded ${parts.join(" and ")}${skipped}.`);
+        } else if (result.skipped === 0 && result.topicsSkipped === 0) {
+          setDemoChatsMessage("Demo seed file has no conversations or topics yet.");
         } else {
           setDemoChatsMessage(
-            `Loaded ${result.imported} demo chat${result.imported === 1 ? "" : "s"}` +
-              (result.skipped > 0 ? ` (${result.skipped} skipped)` : "") +
-              ".",
+            mode === "replace_empty"
+              ? "Skipped — you already have conversations or topics saved."
+              : "No new demo data imported (already present).",
           );
         }
         return result;
@@ -125,11 +156,12 @@ export default function App() {
         setDemoChatsLoading(false);
       }
     },
-    [refreshConversations],
+    [refreshConversations, refreshTopics],
   );
 
   useEffect(() => {
     refreshConversations();
+    refreshTopics();
     refreshReminders();
     getQueryCases()
       .then(setQueryCases)
@@ -171,9 +203,11 @@ export default function App() {
 
   function handleNewChat() {
     setActiveConvId(null);
+    setActiveTopicId(null);
     setActiveReminderId(null);
     setChatPrefill("");
     setPendingDictation(null);
+    setChatScrollToMessageId(null);
     setView("chat");
     setSidebarOpen(false);
   }
@@ -201,8 +235,36 @@ export default function App() {
 
   function handleSelectConversation(id: string) {
     setActiveConvId(id);
+    setActiveTopicId(null);
     setPendingDictation(null);
     setChatPrefill("");
+    setChatScrollToMessageId(null);
+    setView("chat");
+    setSidebarOpen(false);
+  }
+
+  function handleSelectTopic(id: string) {
+    setActiveTopicId(id);
+    setView("topic");
+    setSidebarOpen(false);
+  }
+
+  function handleNewTopic() {
+    const name = window.prompt("Topic name");
+    if (!name?.trim()) return;
+    try {
+      const topic = createTopic(name);
+      refreshTopics();
+      handleSelectTopic(topic.id);
+    } catch {
+      // empty name — ignore
+    }
+  }
+
+  function handleOpenSourceMessage(conversationId: string, messageId: string) {
+    setActiveConvId(conversationId);
+    setActiveTopicId(null);
+    setChatScrollToMessageId(messageId);
     setView("chat");
     setSidebarOpen(false);
   }
@@ -257,6 +319,20 @@ export default function App() {
     refreshConversations();
   }
 
+  function handleRenameTopic(id: string, name: string) {
+    updateTopicName(id, name);
+    refreshTopics();
+  }
+
+  function handleDeleteTopic(id: string) {
+    if (!deleteTopic(id)) return;
+    if (activeTopicId === id) {
+      setActiveTopicId(null);
+      setView("chat");
+    }
+    refreshTopics();
+  }
+
   const navView = toNavView(view);
 
   return (
@@ -273,12 +349,19 @@ export default function App() {
       <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}>
         <Sidebar
           conversations={conversations}
+          topics={topics}
           activeConvId={activeConvId}
+          activeTopicId={activeTopicId}
           activeView={navView}
+          topicViewActive={view === "topic"}
           onSelectConversation={handleSelectConversation}
           onRenameConversation={handleRenameConversation}
           onDeleteConversation={handleDeleteConversation}
           onNewChat={handleNewChat}
+          onSelectTopic={handleSelectTopic}
+          onRenameTopic={handleRenameTopic}
+          onDeleteTopic={handleDeleteTopic}
+          onNewTopic={handleNewTopic}
         />
       </div>
 
@@ -295,22 +378,44 @@ export default function App() {
             userId={userId}
             conversationId={activeConvId}
             conversations={conversations}
+            topics={topics}
             dictations={dictations}
             prefill={chatPrefill}
             pendingDictation={pendingDictation}
+            scrollToMessageId={chatScrollToMessageId}
             onConversationCreated={(id) => {
               setActiveConvId(id);
               refreshConversations();
             }}
             onConversationUpdated={refreshConversations}
+            onTopicsUpdated={refreshTopics}
             onPendingDictationConsumed={() => setPendingDictation(null)}
             onViewInHistory={handleViewInHistory}
+            onScrollToMessageConsumed={() => setChatScrollToMessageId(null)}
             onReminderCreated={() => {
               refreshReminders();
               reload();
             }}
           />
         )}
+
+        {view === "topic" && activeTopicId && (() => {
+          const activeTopic =
+            getTopic(activeTopicId) ?? topics.find((t) => t.id === activeTopicId);
+          if (!activeTopic) return null;
+          return (
+            <TopicView
+              topic={activeTopic}
+              onBack={() => {
+                setActiveTopicId(null);
+                setView("chat");
+              }}
+              onOpenSource={handleOpenSourceMessage}
+              onOpenConversation={handleSelectConversation}
+              onTopicsUpdated={refreshTopics}
+            />
+          );
+        })()}
 
         {view === "reminders" && (
           <RemindersView
@@ -366,6 +471,7 @@ export default function App() {
             userId={userId}
             userName={userName}
             conversationCount={conversations.length}
+            topicCount={topics.length}
             onUserIdChange={setUserId}
             demoChatsLoading={demoChatsLoading}
             demoChatsMessage={demoChatsMessage}
@@ -373,8 +479,11 @@ export default function App() {
             onLoadDemoChats={() => void runDemoChatsImport("merge")}
             onClearConversations={() => {
               clearAllConversations();
+              clearAllTopics();
               setActiveConvId(null);
+              setActiveTopicId(null);
               refreshConversations();
+              refreshTopics();
             }}
           />
         )}

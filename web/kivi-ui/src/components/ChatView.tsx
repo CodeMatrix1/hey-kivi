@@ -8,12 +8,24 @@ import {
   pushLearningFromTrace,
 } from "../storage/conversations";
 import { createReminder } from "../storage/reminders";
+import {
+  recordPromptDismissed,
+  recordPromptShown,
+} from "../storage/topicSuggestState";
+import {
+  createTopic,
+  getTopic,
+  listTopics,
+  saveNoteAndLinkConversation,
+  updateTopicName,
+} from "../storage/topics";
 import type {
   Conversation,
   Dictation,
   PendingDictationContext,
   ReminderDraft,
   StoredMessage,
+  Topic,
 } from "../types";
 import { buildChatContext } from "../utils/conversationContext";
 import { friendlyChatError, INTERRUPTED_RESPONSE_MESSAGE } from "../utils/errors";
@@ -24,6 +36,8 @@ import {
   parseReminderMessage,
   parseSuppliedReminderContent,
 } from "../utils/reminderFlow";
+import { classifyNoteType, proposeNoteFromMessage } from "../utils/topicNotes";
+import { maybeAutoSuggestTopicNotes } from "../utils/topicSuggest";
 import { FromHistoryBlock } from "./FromHistoryBlock";
 import { WelcomeIntro } from "./WelcomeIntro";
 import { PersonalizedBadge } from "./PersonalizedBadge";
@@ -34,6 +48,11 @@ import {
   formValuesToDueAt,
   type ReminderFormValues,
 } from "./ReminderForm";
+import {
+  TopicNoteApprovalCard,
+  type TopicNoteApprovalItem,
+} from "./TopicNoteApprovalCard";
+import { UserMessageMenu } from "./UserMessageMenu";
 
 type ReminderChatState =
   | { mode: "idle" }
@@ -41,17 +60,31 @@ type ReminderChatState =
   | { mode: "confirming"; draft: ReminderDraft }
   | { mode: "editing"; draft: ReminderDraft };
 
+type TopicApprovalState =
+  | { mode: "idle" }
+  | {
+      mode: "approving";
+      topicId: string;
+      topicName: string;
+      source: "manual" | "auto";
+      items: TopicNoteApprovalItem[];
+    };
+
 interface ChatViewProps {
   userId: string;
   conversationId: string | null;
   conversations: Conversation[];
+  topics: Topic[];
   dictations: Dictation[];
   prefill?: string;
   pendingDictation?: PendingDictationContext | null;
+  scrollToMessageId?: string | null;
   onConversationCreated: (id: string) => void;
   onConversationUpdated: () => void;
+  onTopicsUpdated: () => void;
   onPendingDictationConsumed: () => void;
   onViewInHistory?: (dictationId: string) => void;
+  onScrollToMessageConsumed?: () => void;
   onReminderCreated?: () => void;
 }
 
@@ -59,22 +92,34 @@ export function ChatView({
   userId,
   conversationId,
   conversations,
+  topics,
   dictations,
   prefill,
   pendingDictation,
+  scrollToMessageId,
   onConversationCreated,
   onConversationUpdated,
+  onTopicsUpdated,
   onPendingDictationConsumed,
   onViewInHistory,
+  onScrollToMessageConsumed,
   onReminderCreated,
 }: ChatViewProps) {
   const [input, setInput] = useState(prefill || "");
   const [busy, setBusy] = useState(false);
   const [turnErrors, setTurnErrors] = useState<Record<string, string>>({});
   const [reminderState, setReminderState] = useState<ReminderChatState>({ mode: "idle" });
+  const [topicApproval, setTopicApproval] = useState<TopicApprovalState>({ mode: "idle" });
+  const [openMenuMessageId, setOpenMenuMessageId] = useState<string | null>(null);
+  const [highlightMessageId, setHighlightMessageId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const prevConvIdRef = useRef<string | null>(conversationId);
+  const topicApprovalRef = useRef(topicApproval);
+
+  useEffect(() => {
+    topicApprovalRef.current = topicApproval;
+  }, [topicApproval]);
 
   const activeConvId = conversationId ?? prevConvIdRef.current;
   const conv =
@@ -93,15 +138,38 @@ export function ChatView({
     if (prev === null && conversationId !== null) return;
     setTurnErrors({});
     setReminderState({ mode: "idle" });
+    setTopicApproval({ mode: "idle" });
+    setOpenMenuMessageId(null);
   }, [conversationId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [conv?.messages.length, busy, Object.keys(turnErrors).length, reminderState.mode]);
+  }, [
+    conv?.messages.length,
+    busy,
+    Object.keys(turnErrors).length,
+    reminderState.mode,
+    topicApproval.mode,
+  ]);
 
   useEffect(() => {
     return () => abortRef.current?.abort();
   }, []);
+
+  useEffect(() => {
+    if (!scrollToMessageId) return;
+    const el = document.querySelector(`[data-message-id="${scrollToMessageId}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHighlightMessageId(scrollToMessageId);
+      const timer = window.setTimeout(() => {
+        setHighlightMessageId(null);
+        onScrollToMessageConsumed?.();
+      }, 2000);
+      return () => window.clearTimeout(timer);
+    }
+    onScrollToMessageConsumed?.();
+  }, [scrollToMessageId, conv?.messages.length, onScrollToMessageConsumed]);
 
   function markTurnFailed(userMessageId: string, message: string) {
     setTurnErrors((prev) => ({ ...prev, [userMessageId]: message }));
@@ -133,6 +201,119 @@ export function ChatView({
     prevConvIdRef.current = created.id;
     onConversationCreated(created.id);
     return created.id;
+  }
+
+  function conversationTitle(convId: string): string {
+    return (
+      conversations.find((c) => c.id === convId)?.title ??
+      getConversation(convId)?.title ??
+      "Conversation"
+    );
+  }
+
+  function openTopicApproval(
+    topicId: string,
+    message: StoredMessage,
+    source: "manual" | "auto",
+  ) {
+    const topic = getTopic(topicId) ?? topics.find((t) => t.id === topicId);
+    if (!topic || !activeConvId) return;
+    const proposed = proposeNoteFromMessage(message.text);
+    setTopicApproval({
+      mode: "approving",
+      topicId,
+      topicName: topic.name,
+      source,
+      items: [
+        {
+          text: proposed,
+          type: classifyNoteType(message.text),
+          sourceConversationId: activeConvId,
+          sourceMessageId: message.id,
+          sourceConversationTitle: conversationTitle(activeConvId),
+          sourceMessageText: message.text,
+          selected: true,
+        },
+      ],
+    });
+    setOpenMenuMessageId(null);
+    if (source === "auto") {
+      recordPromptShown(activeConvId, message.id);
+    }
+  }
+
+  function tryAutoSuggest(convId: string, userMsg: StoredMessage) {
+    const freshTopics = listTopics();
+    const suggestion = maybeAutoSuggestTopicNotes({
+      conversationId: convId,
+      messageId: userMsg.id,
+      messageText: userMsg.text,
+      topics: freshTopics,
+    });
+    if (!suggestion) return;
+    setTopicApproval({
+      mode: "approving",
+      topicId: suggestion.topicId,
+      topicName: suggestion.topicName,
+      source: "auto",
+      items: suggestion.drafts.map((draft) => ({
+        ...draft,
+        sourceConversationTitle: conversationTitle(convId),
+        selected: true,
+      })),
+    });
+    recordPromptShown(convId, userMsg.id);
+  }
+
+  function handleAcceptTopicNotes() {
+    if (topicApproval.mode !== "approving" || !activeConvId) return;
+    const { topicId, topicName, items, source } = topicApproval;
+    const original = getTopic(topicId);
+    const trimmedName = topicName.trim();
+    if (original && trimmedName && original.name !== trimmedName) {
+      updateTopicName(topicId, trimmedName);
+    }
+    for (const item of items.filter((i) => i.selected && i.text.trim())) {
+      saveNoteAndLinkConversation(topicId, {
+        text: item.text.trim(),
+        type: item.type,
+        sourceConversationId: item.sourceConversationId,
+        sourceMessageId: item.sourceMessageId,
+        sourceConversationTitle: item.sourceConversationTitle,
+      });
+    }
+    setTopicApproval({ mode: "idle" });
+    onTopicsUpdated();
+    if (source === "auto") {
+      appendLocalAssistant(activeConvId, "Added to your topic.");
+    }
+  }
+
+  function handleRejectTopicApproval() {
+    if (topicApproval.mode !== "approving" || !activeConvId) {
+      setTopicApproval({ mode: "idle" });
+      return;
+    }
+    if (topicApproval.source === "auto") {
+      recordPromptDismissed(activeConvId, topicApproval.topicId);
+    }
+    setTopicApproval({ mode: "idle" });
+  }
+
+  function handleManualSelectTopic(topicId: string, message: StoredMessage) {
+    openTopicApproval(topicId, message, "manual");
+  }
+
+  function handleCreateTopicForMessage(message: StoredMessage) {
+    const name = window.prompt("Topic name");
+    if (!name?.trim()) return;
+    try {
+      const topic = createTopic(name);
+      onTopicsUpdated();
+      openTopicApproval(topic.id, message, "manual");
+    } catch {
+      // ignore empty name
+    }
   }
 
   function withSource(draft: ReminderDraft, convId: string | null): ReminderDraft {
@@ -207,6 +388,9 @@ export function ChatView({
     } finally {
       abortRef.current = null;
       setBusy(false);
+      if (topicApprovalRef.current.mode === "idle") {
+        tryAutoSuggest(convId, userMsg);
+      }
     }
   }
 
@@ -257,10 +441,12 @@ export function ChatView({
   const confirmingDraft =
     reminderState.mode === "confirming" ? reminderState.draft : null;
   const editingDraft = reminderState.mode === "editing" ? reminderState.draft : null;
+  const approvingTopic = topicApproval.mode === "approving" ? topicApproval : null;
   const showEmpty =
     messages.length === 0 &&
     !busy &&
     reminderState.mode === "idle" &&
+    topicApproval.mode === "idle" &&
     !confirmingDraft &&
     !editingDraft;
   const pendingUserMessageId =
@@ -277,8 +463,23 @@ export function ChatView({
       ) : (
         <div className="messages">
           {messages.map((m) => (
-            <div key={m.id} className="message-turn">
+            <div
+              key={m.id}
+              className={`message-turn ${highlightMessageId === m.id ? "message-highlight" : ""}`}
+              data-message-id={m.id}
+            >
               <div className={`message message-${m.role}`}>
+                {m.role === "user" && (
+                  <UserMessageMenu
+                    topics={topics}
+                    open={openMenuMessageId === m.id}
+                    onToggle={() =>
+                      setOpenMenuMessageId((id) => (id === m.id ? null : m.id))
+                    }
+                    onSelectTopic={(topicId) => handleManualSelectTopic(topicId, m)}
+                    onCreateTopic={() => handleCreateTopicForMessage(m)}
+                  />
+                )}
                 <div className="message-bubble message-plain">{m.text}</div>
                 {m.role === "assistant" && <PersonalizedBadge trace={m.trace} />}
               </div>
@@ -302,6 +503,42 @@ export function ChatView({
             </div>
           )}
           <div ref={bottomRef} />
+        </div>
+      )}
+
+      {approvingTopic && (
+        <div className="chat-reminder-panel">
+          <TopicNoteApprovalCard
+            topicName={approvingTopic.topicName}
+            items={approvingTopic.items}
+            mode={approvingTopic.source}
+            onChangeItem={(index, patch) => {
+              setTopicApproval((prev) => {
+                if (prev.mode !== "approving") return prev;
+                const items = prev.items.map((item, i) =>
+                  i === index ? { ...item, ...patch } : item,
+                );
+                return { ...prev, items };
+              });
+            }}
+            onToggleItem={(index) => {
+              setTopicApproval((prev) => {
+                if (prev.mode !== "approving") return prev;
+                const items = prev.items.map((item, i) =>
+                  i === index ? { ...item, selected: !item.selected } : item,
+                );
+                return { ...prev, items };
+              });
+            }}
+            onTopicNameChange={(name) => {
+              setTopicApproval((prev) => {
+                if (prev.mode !== "approving") return prev;
+                return { ...prev, topicName: name };
+              });
+            }}
+            onAccept={handleAcceptTopicNotes}
+            onReject={handleRejectTopicApproval}
+          />
         </div>
       )}
 

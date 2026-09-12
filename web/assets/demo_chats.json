@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Demo seed conversations for Kivi semantic memory and personalization.",
+  "version": 2,
+  "description": "Demo seed conversations and topics for Kivi semantic memory and personalization.",
   "conversations": [
     {
       "id": "conv_demo_recall_maya",
@@ -202,6 +202,92 @@
               { "text": "The user prefers the place name Thiruvananthapuram instead of Trivandrum." }
             ]
           }
+        }
+      ]
+    },
+    {
+      "id": "conv_demo_slack_integration",
+      "title": "Slack integration",
+      "createdAt": "2026-09-12T10:00:00.000Z",
+      "updatedAt": "2026-09-12T10:06:00.000Z",
+      "lastUsedAt": "2026-09-12T10:06:00.000Z",
+      "messages": [
+        {
+          "id": "msg_slack_u1",
+          "role": "user",
+          "text": "I'm looking at how we should handle the Slack integration.",
+          "at": "2026-09-12T10:00:00.000Z"
+        },
+        {
+          "id": "msg_slack_a1",
+          "role": "assistant",
+          "text": "What are you deciding between?",
+          "at": "2026-09-12T10:01:00.000Z"
+        },
+        {
+          "id": "msg_slack_u2",
+          "role": "user",
+          "text": "Webhooks or polling mainly. I think webhooks make more sense because we need near real-time updates.",
+          "at": "2026-09-12T10:02:00.000Z"
+        },
+        {
+          "id": "msg_slack_a2",
+          "role": "assistant",
+          "text": "Makes sense. What about authentication?",
+          "at": "2026-09-12T10:03:00.000Z"
+        },
+        {
+          "id": "msg_slack_u3",
+          "role": "user",
+          "text": "Rahul is going to handle the OAuth implementation. I'll take care of the event processing.",
+          "at": "2026-09-12T10:04:00.000Z"
+        },
+        {
+          "id": "msg_slack_u4",
+          "role": "user",
+          "text": "One thing we haven't figured out yet is how we'll handle failed events. We need some kind of retry mechanism.",
+          "at": "2026-09-12T10:06:00.000Z"
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "topic_demo_slack",
+      "name": "Slack integration",
+      "createdAt": "2026-09-12T10:06:00.000Z",
+      "updatedAt": "2026-09-12T10:06:00.000Z",
+      "conversationIds": ["conv_demo_slack_integration"],
+      "notes": [
+        {
+          "id": "tnote_slack_decision",
+          "text": "Use webhooks over polling for near real-time updates.",
+          "type": "decision",
+          "sourceConversationId": "conv_demo_slack_integration",
+          "sourceMessageId": "msg_slack_u2",
+          "sourceConversationTitle": "Slack integration",
+          "createdAt": "2026-09-12T10:06:00.000Z",
+          "updatedAt": "2026-09-12T10:06:00.000Z"
+        },
+        {
+          "id": "tnote_slack_context",
+          "text": "Rahul handles OAuth; I'll handle event processing.",
+          "type": "context",
+          "sourceConversationId": "conv_demo_slack_integration",
+          "sourceMessageId": "msg_slack_u3",
+          "sourceConversationTitle": "Slack integration",
+          "createdAt": "2026-09-12T10:06:00.000Z",
+          "updatedAt": "2026-09-12T10:06:00.000Z"
+        },
+        {
+          "id": "tnote_slack_open",
+          "text": "Need a retry mechanism for failed events — not figured out yet.",
+          "type": "open",
+          "sourceConversationId": "conv_demo_slack_integration",
+          "sourceMessageId": "msg_slack_u4",
+          "sourceConversationTitle": "Slack integration",
+          "createdAt": "2026-09-12T10:06:00.000Z",
+          "updatedAt": "2026-09-12T10:06:00.000Z"
         }
       ]
     }

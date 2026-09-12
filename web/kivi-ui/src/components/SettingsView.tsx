@@ -4,6 +4,7 @@ interface SettingsViewProps {
   userId: string;
   userName?: string;
   conversationCount: number;
+  topicCount: number;
   demoChatsLoading?: boolean;
   demoChatsMessage?: string | null;
   onUserIdChange: (id: string) => void;
@@ -16,6 +17,7 @@ export function SettingsView({
   userId,
   userName,
   conversationCount,
+  topicCount,
   demoChatsLoading = false,
   demoChatsMessage,
   onUserIdChange,
@@ -75,9 +77,9 @@ export function SettingsView({
             type="button"
             className="btn-secondary"
             onClick={onClearConversations}
-            disabled={conversationCount === 0}
+            disabled={conversationCount === 0 && topicCount === 0}
           >
-            Clear all conversations
+            Clear all chats and topics
           </button>
         </div>
       </section>

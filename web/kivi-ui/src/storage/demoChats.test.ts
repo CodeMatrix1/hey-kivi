@@ -5,6 +5,7 @@ import {
   parseDemoChatsFile,
 } from "./demoChats";
 import { CONVERSATIONS_STORAGE_KEY } from "./conversations";
+import { TOPICS_STORAGE_KEY } from "./topics";
 
 describe("parseDemoChatsFile", () => {
   it("parses a valid conversation", () => {
@@ -37,6 +38,45 @@ describe("parseDemoChatsFile", () => {
     expect(file.version).toBe(1);
     expect(file.conversations).toHaveLength(1);
     expect(file.conversations[0].messages).toHaveLength(2);
+  });
+
+  it("parses optional topics", () => {
+    const file = parseDemoChatsFile({
+      version: 2,
+      conversations: [
+        {
+          id: "conv_a",
+          title: "Chat",
+          createdAt: "2026-09-01T10:00:00.000Z",
+          updatedAt: "2026-09-01T10:00:00.000Z",
+          messages: [
+            { id: "m1", role: "user", text: "hello", at: "2026-09-01T10:00:00.000Z" },
+          ],
+        },
+      ],
+      topics: [
+        {
+          id: "topic_a",
+          name: "Slack",
+          createdAt: "2026-09-01T10:00:00.000Z",
+          updatedAt: "2026-09-01T10:00:00.000Z",
+          conversationIds: ["conv_a"],
+          notes: [
+            {
+              id: "n1",
+              text: "Use webhooks",
+              type: "decision",
+              sourceConversationId: "conv_a",
+              sourceMessageId: "m1",
+              createdAt: "2026-09-01T10:00:00.000Z",
+              updatedAt: "2026-09-01T10:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+    expect(file.topics).toHaveLength(1);
+    expect(file.topics?.[0].notes[0].type).toBe("decision");
   });
 
   it("rejects duplicate conversation ids", () => {
@@ -141,5 +181,45 @@ describe("importDemoChats", () => {
     expect(stored.find((c: { id: string }) => c.id === "conv_existing")?.title).toBe(
       "Existing",
     );
+  });
+
+  it("replace_empty imports topics when topic storage is empty", () => {
+    localStorage.clear();
+    const payload = parseDemoChatsFile({
+      version: 2,
+      conversations: [
+        {
+          id: "conv_seed",
+          title: "Seeded",
+          createdAt: "2026-09-01T10:00:00.000Z",
+          updatedAt: "2026-09-01T10:00:00.000Z",
+          messages: [
+            { id: "m1", role: "user", text: "seed", at: "2026-09-01T10:00:00.000Z" },
+          ],
+        },
+      ],
+      topics: [
+        {
+          id: "topic_seed",
+          name: "Slack",
+          createdAt: "2026-09-01T10:00:00.000Z",
+          updatedAt: "2026-09-01T10:00:00.000Z",
+          conversationIds: ["conv_seed"],
+          notes: [
+            {
+              id: "n1",
+              text: "Use webhooks",
+              type: "decision",
+              createdAt: "2026-09-01T10:00:00.000Z",
+              updatedAt: "2026-09-01T10:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    });
+    const result = importDemoChats(payload, "replace_empty");
+    expect(result.topicsImported).toBe(1);
+    const topics = JSON.parse(localStorage.getItem(TOPICS_STORAGE_KEY) || "[]");
+    expect(topics[0].name).toBe("Slack");
   });
 });

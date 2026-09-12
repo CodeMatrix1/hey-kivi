@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from starlette.staticfiles import StaticFiles
 
-UI_ASSET_VERSION = "34"
+UI_ASSET_VERSION = "35"
 
 
 class _NoCacheStaticFiles(StaticFiles):

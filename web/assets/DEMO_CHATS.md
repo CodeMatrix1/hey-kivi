@@ -1,6 +1,6 @@
 # Demo chat seed file
 
-Demo conversations load from `demo_chats.json` into browser localStorage (sidebar chats). They are **not** stored on the server.
+Demo **conversations** and **topics** load from `demo_chats.json` into browser localStorage. They are **not** stored on the server.
 
 ## File location
 
@@ -11,16 +11,17 @@ Served at: `/static/assets/demo_chats.json`
 ## When chats are loaded
 
 1. **Automatic** — on first visit when the sidebar has no conversations (empty localStorage).
-2. **Settings** — **Load demo chats** merges conversations from the file (skips IDs already present).
-3. **URL** — `?seed_chats=1` merges demo chats on page load (useful for refresh during review).
+2. **Settings** — **Load demo chats** merges conversations and topics from the file (skips IDs already present).
+3. **URL** — `?seed_chats=1` merges demo data on page load (useful for refresh during review).
 
 ## Top-level shape
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "description": "Optional note for authors",
-  "conversations": [ /* ... */ ]
+  "conversations": [ /* ... */ ],
+  "topics": [ /* optional */ ]
 }
 ```
 
@@ -29,6 +30,7 @@ Served at: `/static/assets/demo_chats.json`
 | `version` | yes | Integer. Bump when you change seed content materially. |
 | `description` | no | Human-readable note (ignored by the app). |
 | `conversations` | yes | Array of conversation objects (may be empty). |
+| `topics` | no | Array of topic objects (sidebar Topics + curated notes). |
 
 ## Conversation object
 
@@ -109,6 +111,40 @@ Useful fields for demos:
 - `applied_preferences` — `[{ "observed": "Aditya", "preferred": "Aaditya" }]`
 - `selected_dictation_id` — when find/polish selected a note
 
+## Topic object (optional)
+
+```json
+{
+  "id": "topic_demo_slack",
+  "name": "Slack integration",
+  "createdAt": "2026-09-12T10:06:00.000Z",
+  "updatedAt": "2026-09-12T10:06:00.000Z",
+  "conversationIds": ["conv_demo_slack_integration"],
+  "notes": [
+    {
+      "id": "tnote_slack_decision",
+      "text": "Use webhooks over polling for near real-time updates.",
+      "type": "decision",
+      "sourceConversationId": "conv_demo_slack_integration",
+      "sourceMessageId": "msg_slack_u2",
+      "sourceConversationTitle": "Slack integration",
+      "createdAt": "2026-09-12T10:06:00.000Z",
+      "updatedAt": "2026-09-12T10:06:00.000Z"
+    }
+  ]
+}
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `id` | yes | Stable unique id (e.g. `topic_demo_*`). |
+| `name` | yes | Sidebar label. |
+| `createdAt` / `updatedAt` | yes | ISO 8601 UTC timestamps. |
+| `conversationIds` | no | Reference list of `conv_*` ids (not message copies). |
+| `notes` | no | Curated notes; may omit `source*` fields for manual-only demo notes. |
+
+Note `type` on each note: `"decision"` | `"context"` | `"open"`.
+
 ## Full minimal example
 
 ```json
@@ -154,4 +190,4 @@ Useful fields for demos:
 
 - Demo chats are **UI-only**. They do not write to Hindsight or SQLite unless the user sends a new message.
 - Pair recall demos with server seed data (`POST /seed`, corpus import, or baseline volume) so assistant answers match real memories.
-- Use **Clear all conversations** in Settings before reloading if you want a clean re-import of the same IDs.
+- Use **Clear all chats and topics** in Settings before reloading if you want a clean re-import of the same IDs.

@@ -148,6 +148,9 @@ select {
 }
 
 .sidebar-conv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
   max-height: 50vh;
   overflow-y: auto;
 }
@@ -1772,4 +1775,392 @@ select {
 
 .reminder-toast .reminder-card-trailing {
   opacity: 1;
+}
+
+/* Topics */
+.btn-new-topic {
+  width: 100%;
+  text-align: left;
+  background: var(--accent-dim);
+  border: 1px solid rgba(107, 158, 122, 0.25);
+  color: var(--accent);
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.btn-new-topic:hover {
+  border-color: var(--accent);
+  background: rgba(107, 158, 122, 0.22);
+}
+
+.topic-view {
+  padding: 1.25rem 1.5rem 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.topic-view-header {
+  margin-bottom: 1.25rem;
+}
+
+.topic-back-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.topic-back-btn:hover {
+  color: var(--text);
+}
+
+.topic-view-title {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  margin: 0;
+}
+
+.topic-name-input,
+.topic-note-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+}
+
+.topic-name-input {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.topic-name-input:focus {
+  outline: none;
+  border-bottom: 1px solid var(--accent);
+}
+
+.topic-note-row {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.topic-note-row:last-child {
+  border-bottom: none;
+}
+
+.topic-note-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.topic-note-edit-btn {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 0.15rem 0.25rem;
+  margin-left: auto;
+}
+
+.topic-note-edit-btn:hover {
+  color: var(--text);
+}
+
+.topic-new-note-btn {
+  margin-top: 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+}
+
+.topic-new-note-btn:hover {
+  text-decoration: underline;
+}
+
+.topic-new-note,
+.topic-note-editor {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.topic-note-editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.topic-note-editor-toolbar select {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  padding: 0.3rem 0.45rem;
+  font-size: 0.82rem;
+}
+
+.topic-note-editor-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.topic-note-action {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.topic-note-action-primary {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.topic-note-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.topic-view-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.topic-empty-hint {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.topic-note-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.topic-section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+.topic-note-list,
+.topic-conversation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.topic-note-text {
+  margin: 0 0 0.25rem;
+  line-height: 1.45;
+}
+
+.topic-source-link,
+.topic-conversation-link {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.82rem;
+}
+
+.topic-source-link:hover,
+.topic-conversation-link:hover {
+  text-decoration: underline;
+}
+
+.topic-conversations-section {
+  margin-top: 1.5rem;
+}
+
+.topic-approval-card {
+  padding: 0.85rem 1rem;
+}
+
+.topic-approval-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.topic-approval-topic-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.topic-approval-topic-name {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+}
+
+.topic-approval-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.topic-approval-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.topic-approval-fields {
+  flex: 1;
+  min-width: 0;
+}
+
+.topic-approval-type-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.topic-approval-type-label select,
+.topic-approval-text {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+}
+
+.topic-approval-source {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.message-user {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.user-message-menu-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.user-message-menu-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.35rem 0.25rem;
+  line-height: 1;
+  font-size: 1rem;
+}
+
+.user-message-menu-btn:hover {
+  color: var(--text);
+}
+
+.message-turn:has(.user-message-menu-btn[aria-expanded="true"]) {
+  position: relative;
+  z-index: 5;
+}
+
+.user-message-menu {
+  z-index: 50;
+  min-width: 180px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 0.35rem 0;
+}
+
+.user-message-menu-floating {
+  position: fixed;
+}
+
+.user-message-menu-label {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.user-message-menu-empty {
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.user-message-menu button[role="menuitem"] {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+.user-message-menu button[role="menuitem"]:hover {
+  background: var(--surface-2);
+}
+
+.message-turn.message-highlight .message-bubble {
+  box-shadow: 0 0 0 2px rgba(107, 158, 122, 0.45);
 }

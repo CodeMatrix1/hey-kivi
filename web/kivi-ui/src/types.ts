@@ -119,6 +119,38 @@ export interface PendingDictationContext {
   asr?: string;
 }
 
+export type TopicNoteType = "decision" | "context" | "open";
+
+export interface TopicNote {
+  id: string;
+  text: string;
+  type: TopicNoteType;
+  /** Present for notes approved from chat; omitted for manual TopicView entries */
+  sourceConversationId?: string;
+  sourceMessageId?: string;
+  sourceConversationTitle?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Topic {
+  id: string;
+  name: string;
+  notes: TopicNote[];
+  conversationIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TopicNoteDraft {
+  text: string;
+  type: TopicNoteType;
+  sourceConversationId: string;
+  sourceMessageId: string;
+  sourceConversationTitle?: string;
+  sourceMessageText: string;
+}
+
 export type AppView =
   | "chat"
   | "history"
@@ -126,4 +158,5 @@ export type AppView =
   | "reminders"
   | "personalization"
   | "settings"
-  | "developer";
+  | "developer"
+  | "topic";

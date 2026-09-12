@@ -1,0 +1,79 @@
+# Pull published Hey Kivi image + auto-seed baseline volumes on first boot.
+#
+#   cp .env.example .env    # set GROQ_API_KEY
+#   docker compose -f docker-compose.hub.yml --env-file .env up -d
+#
+# If Hindsight crashes with pg0 page assertion errors, wipe corrupt volumes:
+#   docker compose -f docker-compose.hub.yml --env-file .env down -v
+#   docker compose -f docker-compose.hub.yml --env-file .env up -d
+#
+# UI: http://localhost:8002  |  verify: GET /stats/golden_goose_eval_user → 506 dictations
+
+name: hey-kivi
+
+services:
+  init-baseline:
+    image: ${HEY_KIVI_IMAGE:-codesentinnel/hey-kivi:latest}
+    user: root
+    entrypoint: ["/bin/sh", "/app/hindsight_pipeline_2/ops/scripts/docker-init-volumes.sh"]
+    volumes:
+      - hindsight_pg0:/hindsight
+      - kivi2_sqlite:/sqlite
+    restart: "no"
+
+  hindsight:
+    image: ghcr.io/vectorize-io/hindsight:latest
+    container_name: hey-kivi-hindsight
+    depends_on:
+      init-baseline:
+        condition: service_completed_successfully
+    ports:
+      - "8888:8888"
+      - "9999:9999"
+    environment:
+      HINDSIGHT_API_LLM_PROVIDER: groq
+      HINDSIGHT_API_LLM_API_KEY: ${GROQ_API_KEY:?Set GROQ_API_KEY in .env}
+      HINDSIGHT_API_LLM_MODEL: ${HINDSIGHT_API_LLM_MODEL:-openai/gpt-oss-20b}
+      HINDSIGHT_API_LLM_GROQ_SERVICE_TIER: ${HINDSIGHT_API_LLM_GROQ_SERVICE_TIER:-on_demand}
+      HINDSIGHT_API_WORKER_ID: hindsight
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/health', timeout=5)"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+      start_period: 120s
+    volumes:
+      - hindsight_pg0:/home/hindsight/.pg0
+    restart: unless-stopped
+
+  hey-kivi:
+    image: ${HEY_KIVI_IMAGE:-codesentinnel/hey-kivi:latest}
+    container_name: hey-kivi-app
+    depends_on:
+      hindsight:
+        condition: service_healthy
+    ports:
+      - "8002:8002"
+    env_file:
+      - .env
+    environment:
+      KIVI_MEMORY_BACKEND: hindsight
+      HINDSIGHT_BASE_URL: http://hindsight:8888
+      HINDSIGHT_BANK_PREFIX: ${HINDSIGHT_BANK_PREFIX:-kivi}
+      HINDSIGHT_RECALL_BUDGET: ${HINDSIGHT_RECALL_BUDGET:-mid}
+      KIVI2_DB_PATH: /app/hindsight_pipeline_2/artifacts/runtime/kivi.sqlite3
+      KIVI_REQUIRE_LLM: ${KIVI_REQUIRE_LLM:-true}
+      KIVI_CHAT: ${KIVI_CHAT:-false}
+      KIVI_DEFAULT_USER_ID: ${KIVI_DEFAULT_USER_ID:-golden_goose_eval_user}
+      LLM_PROVIDER: ${LLM_PROVIDER:-groq}
+      GROQ_API_KEY: ${GROQ_API_KEY:?Set GROQ_API_KEY in .env}
+      GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-20b}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-}
+    volumes:
+      - kivi2_sqlite:/app/hindsight_pipeline_2/artifacts/runtime
+    restart: unless-stopped
+
+volumes:
+  hindsight_pg0:
+  kivi2_sqlite:

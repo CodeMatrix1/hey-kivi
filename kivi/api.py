@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
+from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from starlette.staticfiles import StaticFiles
 
-UI_ASSET_VERSION = "4"
+UI_ASSET_VERSION = "34"
 
 
 class _NoCacheStaticFiles(StaticFiles):
@@ -25,7 +26,8 @@ class _NoCacheStaticFiles(StaticFiles):
 
 from hindsight_pipeline_2.kivi.agent import HeyKiviAgent
 from hindsight_pipeline_2.kivi.config import Settings
-from hindsight_pipeline_2.kivi.corpus.import_corpus import ingest_jsonl
+from hindsight_pipeline_2.kivi.corpus.import_corpus import ingest_jsonl, ingest_record
+from hindsight_pipeline_2.kivi.models import DictationRecord, utc_now_iso
 from hindsight_pipeline_2.paths import DATA_CORPUS_DIR, WEB_DIR
 from hindsight_pipeline_2.kivi.storage.dictation_store import DictationStore
 from hindsight_pipeline_2.kivi.memory.hindsight_adapter import get_memory_backend
@@ -63,9 +65,15 @@ if STATIC_DIR.is_dir():
     app.mount("/static", _NoCacheStaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
+class ContextMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(..., min_length=1, max_length=4000)
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=8000)
     user_id: str = Field(default=settings.default_user_id, min_length=1, max_length=128)
+    context_messages: list[ContextMessage] | None = Field(default=None, max_length=6)
 
 
 class SeedRequest(BaseModel):
@@ -84,12 +92,13 @@ class CorpusImportRequest(BaseModel):
 
 @app.get("/")
 def root() -> FileResponse:
-    index = STATIC_DIR / "chat" / "index.html"
-    if not index.is_file():
-        index = STATIC_DIR / "index.html"
-    if not index.is_file():
-        raise HTTPException(404, "chat UI missing")
-    return FileResponse(index)
+    index = STATIC_DIR / "dist" / "index.html"
+    if index.is_file():
+        return FileResponse(index)
+    raise HTTPException(
+        404,
+        "chat UI missing — run: cd web/kivi-ui && npm install && npm run build",
+    )
 
 
 @app.get("/health")
@@ -105,7 +114,7 @@ def health() -> dict[str, Any]:
         "llm_provider": settings.llm_provider,
         "db_path": str(settings.db_path),
         "ui_asset_version": UI_ASSET_VERSION,
-        "save_chats": agent.save_chats,
+        "kivi_chat": agent.kivi_chat,
         "default_user_id": settings.default_user_id,
     }
     if settings.default_user_name:
@@ -119,7 +128,12 @@ def chat_endpoint(body: ChatRequest) -> dict[str, Any]:
     message = body.message.strip()
     db_before = sqlite_counts(settings.db_path, user_id)
     timer = MetricsTimer()
-    result = agent.chat(user_id, message)
+    context_messages = None
+    if body.context_messages:
+        context_messages = [
+            {"role": m.role, "content": m.content.strip()} for m in body.context_messages
+        ]
+    result = agent.chat(user_id, message, context_messages=context_messages)
     payload = result.to_dict()
     payload["metrics"] = build_turn_metrics(
         trace=payload["trace"],
@@ -198,6 +212,33 @@ def list_memories(user_id: str, sample_limit: int = 20) -> dict[str, Any]:
     }
 
 
+class CreateTextDictationRequest(BaseModel):
+    text: str = Field(..., min_length=1, max_length=8000)
+
+
+@app.post("/dictations/{user_id}")
+def create_text_dictation(user_id: str, body: CreateTextDictationRequest) -> dict[str, Any]:
+    """Add a text note to history (not speech) — full dictation ingest + Hindsight retain."""
+    uid = user_id.strip()
+    text = body.text.strip()
+    record = DictationRecord(
+        id=f"d_note_{uuid4().hex[:12]}",
+        user_id=uid,
+        asr=text,
+        formatted=text,
+        created_at=utc_now_iso(),
+    )
+    try:
+        return ingest_record(
+            record,
+            store=store,
+            lexical_store=lexical_store,
+            memory=memory,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
 @app.get("/dictations/{user_id}")
 def list_dictations(user_id: str, limit: int = 20) -> dict[str, Any]:
     total = store.count_for_user(user_id)
@@ -221,12 +262,36 @@ def list_lexical(user_id: str) -> dict[str, Any]:
     }
 
 
+class LexicalPreferenceRequest(BaseModel):
+    preferred: str = Field(..., min_length=1, max_length=200)
+    inputs: list[str] = Field(..., min_length=1, max_length=20)
+    previous_preferred: str | None = Field(default=None, max_length=200)
+
+
+@app.post("/lexical/{user_id}/preference")
+def save_lexical_preference(user_id: str, body: LexicalPreferenceRequest) -> dict[str, Any]:
+    uid = user_id.strip()
+    preferred = body.preferred.strip()
+    try:
+        lexical_store.replace_preference_group(
+            uid,
+            preferred,
+            body.inputs,
+            previous_preferred=body.previous_preferred,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    rows = lexical_store.list_active(uid)
+    mappings = [r.to_dict() for r in rows if r.canonical == preferred]
+    return {"ok": True, "preferred": preferred, "mappings": mappings}
+
+
 def main() -> None:
     import uvicorn
 
     port = int(os.getenv("KIVI_API_PORT", "8002"))
     uvicorn.run(
-        "kivi.api:app",
+        "hindsight_pipeline_2.kivi.api:app",
         host="0.0.0.0",
         port=port,
         reload=False,

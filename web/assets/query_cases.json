@@ -56,7 +56,8 @@
     "category": "Prepare & polish",
     "title": "Prepare for the payments review",
     "message": "I have a payments team review coming up. Pull together what I have already said about the review and the presentation work, then give me the key points to bring in.",
-    "expected_summary": "Combine supported payments-review and presentation context without inventing outcomes.",
+    "expected_summary": "Sept 8 review + presentation work, Sept 10 presentation follow-up; state what is recorded and clearly flag missing agenda/outcomes.",
+    "example_reply": "Based on the records, here is a recap of what has been noted regarding your payments team review and presentation work:\n\n**What is recorded:**\n* **Initial Meeting:** You had a project review with the payments team on Tuesday, September 8, 2026.\n* **Presentation Work:** You worked on a presentation for the payments review earlier that morning (September 8).\n* **Subsequent Activity:** There is a record noting that you worked on a presentation for the payments review on Thursday, September 10, 2026.\n\n**Key Points to Bring In:**\nThe memories do not contain specific topics, discussions, decisions, or outcomes from these sessions. Therefore, I cannot list specific key points from your previous conversations. You may want to review your notes from the September 8 and September 10 sessions to confirm:\n1. What feedback was given during the September 8 review.\n2. What changes or additions were made to the presentation between September 8 and September 10.\n3. Any specific metrics, blockers, or decisions that were highlighted during those times.",
     "corpus_anchors": ["hist_381", "hist_386"],
     "expect": {
       "decision": "answer",

@@ -11,7 +11,6 @@ PATH B user_id: corpus_repro_user        (import only — never import into gold
 PATH A (primary — do this): restore ops/baseline-volumes/*.tar.gz → compose up → verify /stats → chat probes
 PATH B (optional — reproducibility only): compose up → import 500 JSONL as corpus_repro_user → verify reports
   (Path B: ~505 Hindsight retains, 30–90+ min, Groq rate limits — not required for review)
-NEVER: Seed demo on golden_goose_eval_user after restore (wipes SQLite for that user)
 NEVER: Path B import into golden_goose_eval_user (baseline already contains that corpus)
 VERIFY: pytest (offline) → /health → /stats → 3 curl chat probes → optional corpus_runner
 RESET: docker compose down -v
@@ -20,7 +19,6 @@ RESET: docker compose down -v
 All commands below assume:
 
 ```bash
-cd hindsight_pipeline_2
 cp .env.example .env   # set GROQ_API_KEY; keep HINDSIGHT_BANK_PREFIX=kivi for Path A
 ```
 
@@ -28,9 +26,8 @@ cp .env.example .env   # set GROQ_API_KEY; keep HINDSIGHT_BANK_PREFIX=kivi for P
 
 | User ID | When to use |
 |---------|-------------|
-| `golden_goose_eval_user` | **Path A only** — baseline snapshot already has 505 dictations + Hindsight memories for this user. Run §7 chat probes with this id. |
-| `corpus_repro_user` | **Path B only** — fresh import of the 500 JSONL to prove reproducibility without overwriting the baseline user. Use this id in §9 import and when chatting after a Path B import. |
-| `demo_user` | Developer seed demo only (§4) — never use for review. |
+| `golden_goose_eval_user` | **Path A only** — baseline snapshot already has 505 dictations + Hindsight memories for this user. Run §6 chat probes with this id. |
+| `corpus_repro_user` | **Path B only** — fresh import of the 500 JSONL to prove reproducibility without overwriting the baseline user. Use this id in §8 import and when chatting after a Path B import. |
 
 ---
 
@@ -64,7 +61,7 @@ Copy **only** `hindsight_pipeline_2/.env.example` → `hindsight_pipeline_2/.env
 | `HINDSIGHT_RECALL_BUDGET` | No | Default `mid` |
 | `KIVI2_DB_PATH` | No | SQLite path (`artifacts/runtime/kivi.sqlite3` on host; set in compose for Docker) |
 | `KIVI_REQUIRE_LLM` | No | `true` (default) |
-| `KIVI_SAVE_CHATS` | No | Default `false` in compose (keeps baseline SQLite clean during review) |
+| `KIVI_CHAT` | No | Default `false` — when `true`, substantive chat retains to Hindsight (not dictation rows) |
 | `HINDSIGHT_API_LLM_MODEL` | No | Hindsight container model |
 | `HINDSIGHT_API_LLM_GROQ_SERVICE_TIER` | No | Default `on_demand` |
 | `HINDSIGHT_RETAIN_MIN_INTERVAL_SECONDS` | No | Import throttle (default `30`) |
@@ -80,19 +77,38 @@ pip install -r requirements.txt
 pytest evals/tests -q    # from this directory; pythonpath=.. in pytest.ini (monorepo parent)
 ```
 
----
+### Chat UI (React)
 
-## 4. Developer only — Seed demo
-
-**Not the reviewer path.** `POST /seed` or the UI Seed button (Developer mode) **wipes SQLite dictations** for the current `user_id` and inserts 3 demo rows. Never run on `golden_goose_eval_user` after snapshot restore.
+The product UI is a Vite + React app under `web/kivi-ui/`. Docker builds it automatically. For local API dev without Docker:
 
 ```bash
-python -m hindsight_pipeline_2.kivi.seed --user-id demo_user
+cd web/kivi-ui
+npm install
+npm run build    # outputs to web/dist/
+cd ../..
+python -m hindsight_pipeline_2.kivi.api   # serves dist/ at /
 ```
+
+Optional hot reload: `npm run dev` in `web/kivi-ui/` (proxies API to `:8002`).
+
+Product surfaces:
+
+| Surface | Storage | Notes |
+|---------|---------|--------|
+| **Chats** | Browser `localStorage` | Multi-turn threads; optional demo seed from `web/assets/demo_chats.json` |
+| **History** | Server SQLite | Dictations; add text notes via UI or `POST /dictations/{user_id}` |
+| **Reminders** | Browser `localStorage` | Client-side; message must include **remind** + date/time |
+| **Personalization** | Server SQLite | Lexical preferences + learning feed |
+| **Settings** | — | User id, load/clear demo chats, developer tools link |
+| **Developer tools** | — | Query library (`query_cases.json`), traces, metrics (`?dev=1`) |
+
+**Demo chat seed:** edit `web/assets/demo_chats.json` (schema: `web/assets/DEMO_CHATS.md`). Loads automatically when sidebar is empty, or use **Settings → Load demo chats**, or `?seed_chats=1`. UI-only — does not ingest into Hindsight; pair with Path A baseline for recall.
+
+`KIVI_CHAT` defaults to `false` for review (see `.env.example`). Verify: `GET /health` → `"kivi_chat": false`. Set `KIVI_CHAT=true` to retain substantive live chat to Hindsight (not dictation rows).
 
 ---
 
-## 5. Start Docker Compose
+## 4. Start Docker Compose
 
 ```bash
 docker compose --env-file .env up --build -d
@@ -101,7 +117,7 @@ curl http://localhost:8002/health
 
 **Volumes:** `hey-kivi_hindsight_pg0`, `hey-kivi_kivi2_sqlite`.
 
-### 5b. Path A — Restore baseline snapshot
+### 4b. Path A — Restore baseline snapshot
 
 **Bash (Linux/macOS):**
 
@@ -112,6 +128,12 @@ bash ops/scripts/restore_baseline.sh
 **PowerShell (Windows):**
 
 ```powershell
+.\ops\scripts\restore_baseline.ps1
+```
+
+Or run the steps manually from `hindsight_pipeline_2/`:
+
+```powershell
 docker compose --env-file .env down -v
 docker volume create hey-kivi_hindsight_pg0
 docker volume create hey-kivi_kivi2_sqlite
@@ -119,6 +141,8 @@ docker run --rm -v hey-kivi_hindsight_pg0:/data -v "${PWD}/ops/baseline-volumes:
 docker run --rm -v hey-kivi_kivi2_sqlite:/data -v "${PWD}/ops/baseline-volumes:/in" alpine tar xzf /in/kivi2_sqlite.tar.gz -C /data
 docker compose --env-file .env up -d
 ```
+
+If `bash ops/scripts/restore_baseline.sh` fails with `set: pipefail: invalid option`, the script has Windows CRLF line endings — use the `.ps1` script above or re-checkout with `*.sh text eol=lf` from `.gitattributes`.
 
 Expect `GET /stats/golden_goose_eval_user` → `dictations: 505`, `hindsight_memories` ≈ 648.
 
@@ -128,19 +152,19 @@ Expect `GET /stats/golden_goose_eval_user` → `dictations: 505`, `hindsight_mem
 
 ---
 
-## 6. Endpoints
+## 5. Endpoints
 
 | URL | Purpose |
 |-----|---------|
 | http://localhost:8002 | Chat UI |
-| http://localhost:8002/health | Health + `default_user_id` |
+| http://localhost:8002/health | Health + `kivi_chat`, `default_user_id`, `ui_asset_version` |
 | http://localhost:8002/stats/{user_id} | Dictation + Hindsight counts |
 | http://localhost:8888 | Hindsight API |
 | http://localhost:9999 | Hindsight admin UI |
 
 ---
 
-## 7. Primary chat probes (Path A)
+## 6. Primary chat probes (Path A)
 
 Use `user_id=golden_goose_eval_user` (baseline user — do not re-import corpus for this id):
 
@@ -162,13 +186,13 @@ Optional: find + polish train seats (`find_dictations`, `polish_dictation`).
 
 ---
 
-## 8. Run tests and evals
+## 7. Run tests and evals
 
 All commands assume `cd hindsight_pipeline_2` and `pip install -r requirements.txt`.
 
-### 8a. Pytest (offline — no Docker, no API keys)
+### 7a. Pytest (offline — no Docker, no API keys)
 
-**76 tests** use `StubMemory` and run on the host in seconds:
+**105 tests** use `StubMemory` and run on the host in seconds:
 
 ```bash
 pytest evals/tests -q                      # all tiers
@@ -182,7 +206,7 @@ pytest evals/tests/scenario -q        # JSON case runners (stub backend)
 
 Folder layout and per-file test inventories: see [evals/README.md](../evals/README.md) and the module docstring at the top of each `evals/**/test_*.py`.
 
-### 8b. JSON case runners (stub — offline)
+### 7b. JSON case runners (stub — offline)
 
 ```bash
 python -m hindsight_pipeline_2.evals.cli.runner --backend stub
@@ -191,9 +215,9 @@ python -m hindsight_pipeline_2.evals.cli.corpus_runner --backend stub --limit 5
 
 Reports: `artifacts/evals/last_run.json` (offline stub), `artifacts/reports/<stem>_<timestamp>.json`, and pinned `artifacts/reports/query_probe.latest.json` after `query_probe`.
 
-### 8c. Docker integration (live Hindsight + API)
+### 7c. Docker integration (live Hindsight + API)
 
-Requires **Path A or B** (§5–§5b): `docker compose up -d`, snapshot restored or corpus imported, `GROQ_API_KEY` in `.env`.
+Requires **Path A or B** (§4–§4b): `docker compose up -d`, snapshot restored or corpus imported, `GROQ_API_KEY` in `.env`.
 
 **From the host** (stack listening on localhost):
 
@@ -227,7 +251,7 @@ docker compose --env-file .env exec hey-kivi \
   python -m hindsight_pipeline_2.evals.cli.runner --backend hindsight
 ```
 
-Optional: offline pytest inside the image (same stub tests as §8a):
+Optional: offline pytest inside the image (same stub tests as §7a):
 
 ```bash
 docker compose --env-file .env exec hey-kivi \
@@ -236,15 +260,20 @@ docker compose --env-file .env exec hey-kivi \
 
 `evals/integration/` documents future `@pytest.mark.integration` host tests; today integration is **CLI runners + query_probe**, not pytest against Docker.
 
-### 8d. After editing query cases
+### 7d. After editing static UI assets
 
 ```bash
-python -m hindsight_pipeline_2.evals.sync_cases   # copies cases/query_cases.json → web/assets/ for the UI
+# Query library (developer tools)
+python -m hindsight_pipeline_2.evals.sync_cases   # evals/cases/query_cases.json → web/assets/
+
+# Demo sidebar chats — edit web/assets/demo_chats.json directly, then rebuild if needed:
+cd web/kivi-ui && npm run build
+# Reload browser; use ?seed_chats=1 or Settings → Load demo chats to merge
 ```
 
 ---
 
-## 9. Corpus import (Path B)
+## 8. Corpus import (Path B)
 
 **Use `corpus_repro_user` (or any fresh user id).** Do not import into `golden_goose_eval_user` — the Path A baseline already contains that user's 505 dictations and Hindsight bank `kivi_golden_goose_eval_user`. Re-importing would duplicate retains and corrupt the reviewer snapshot.
 
@@ -287,7 +316,7 @@ Idempotent per user: unchanged rows skipped via `corpus_ingestions`. Reports: `a
 
 ---
 
-## 10. Inspect state
+## 9. Inspect state
 
 ### Recommended (Docker)
 
@@ -321,7 +350,7 @@ Legacy columns (`app`, `topic`, `channel`) are dropped automatically if present 
 
 ---
 
-## 11. Reset
+## 10. Reset
 
 ```bash
 docker compose --env-file .env down -v
@@ -335,7 +364,9 @@ docker compose --env-file .env down -v
 2. `pip install -r requirements.txt && pytest evals/tests -q`
 3. Path A: restore baseline → `docker compose up -d`
 4. `curl localhost:8002/health` → `curl localhost:8002/stats/golden_goose_eval_user`
-5. Three chat probes (§7) with `golden_goose_eval_user`
-6. Optional Path B: import as `corpus_repro_user` (§9) — never into `golden_goose_eval_user`
-7. Optional Docker evals (§8c): `runner --backend hindsight`, `query_probe`
-8. `docker compose down -v`
+5. Open http://localhost:8002 — confirm kivi-ui (sidebar chats/history/reminders)
+6. Three chat probes (§6) with `golden_goose_eval_user` (curl or UI)
+7. Optional: demo sidebar chats from `demo_chats.json` (auto on empty sidebar)
+8. Optional Path B: import as `corpus_repro_user` (§8) — never into `golden_goose_eval_user`
+9. Optional Docker evals (§7c): `runner --backend hindsight`, `query_probe`
+10. `docker compose down -v`

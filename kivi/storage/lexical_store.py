@@ -217,6 +217,80 @@ class LexicalStore:
             ).fetchall()
         return [_row_to_record(r) for r in rows]
 
+    def _deactivate_rows(self, conn: Any, row_ids: list[str], now: str) -> None:
+        for row_id in row_ids:
+            conn.execute(
+                "UPDATE lexical_mappings SET active=0, updated_at=? WHERE id=?",
+                (now, row_id),
+            )
+
+    def replace_preference_group(
+        self,
+        user_id: str,
+        preferred: str,
+        inputs: list[str],
+        *,
+        kind: LexicalKind = "terminology",
+        previous_preferred: str | None = None,
+    ) -> dict[str, Any]:
+        """Replace one preference group: many input phrases → one preferred term."""
+        preferred = preferred.strip()
+        cleaned_inputs = [i.strip() for i in inputs if i.strip()]
+        if not preferred:
+            raise ValueError("preferred term is required")
+        if not cleaned_inputs:
+            raise ValueError("at least one input phrase is required")
+
+        n_preferred = normalize_lexical(preferred)
+        n_inputs = [normalize_lexical(i) for i in cleaned_inputs]
+        if len(set(n_inputs)) != len(n_inputs):
+            raise ValueError("duplicate input phrases are not allowed")
+
+        n_old = (
+            normalize_lexical(previous_preferred)
+            if previous_preferred and previous_preferred.strip()
+            else n_preferred
+        )
+        now = utc_now_iso()
+        renamed = bool(previous_preferred and n_old != n_preferred)
+
+        with _connect(self.db_path) as conn:
+            if renamed:
+                old_rows = conn.execute(
+                    """
+                    SELECT id FROM lexical_mappings
+                    WHERE user_id=? AND active=1 AND normalized_canonical=?
+                    """,
+                    (user_id, n_old),
+                ).fetchall()
+                self._deactivate_rows(conn, [r["id"] for r in old_rows], now)
+            else:
+                group_rows = conn.execute(
+                    """
+                    SELECT id, normalized_alias FROM lexical_mappings
+                    WHERE user_id=? AND active=1 AND normalized_canonical=?
+                    """,
+                    (user_id, n_preferred),
+                ).fetchall()
+                to_remove = [
+                    r["id"]
+                    for r in group_rows
+                    if r["normalized_alias"] not in n_inputs
+                ]
+                self._deactivate_rows(conn, to_remove, now)
+
+        for alias in cleaned_inputs:
+            self.upsert_mapping(
+                user_id,
+                LexicalMapping(alias=alias, canonical=preferred, kind=kind),
+            )
+
+        return {
+            "preferred": preferred,
+            "inputs": cleaned_inputs,
+            "active_count": self.active_count(user_id),
+        }
+
     def clear_user(self, user_id: str) -> None:
         with _connect(self.db_path) as conn:
             conn.execute("DELETE FROM lexical_mappings WHERE user_id=?", (user_id,))

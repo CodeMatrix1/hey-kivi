@@ -89,18 +89,24 @@ class HindsightBackend:
 
     def retain(self, user_id: str, content: str, *, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
         bank_id = self.ensure_bank(user_id)
-        # Embed typed metadata in content; Hindsight metadata support varies by version.
+        meta = metadata or {}
+        retain_kwargs: dict[str, Any] = {
+            "bank_id": bank_id,
+            "content": content,
+            "context": "Kivi durable semantic memory",
+            "retain_async": False,
+        }
+        if meta:
+            retain_kwargs["metadata"] = meta
         try:
-            resp = _run_hindsight(
-                self._client.aretain,
-                bank_id=bank_id,
-                content=content,
-                context="Kivi durable semantic memory",
-                retain_async=False,
-            )
+            resp = _run_hindsight(self._client.aretain, **retain_kwargs)
         except TypeError:
-            resp = _run_hindsight(self._client.aretain, bank_id=bank_id, content=content)
-        return {"bank_id": bank_id, "response": resp, "metadata": metadata or {}}
+            retain_kwargs.pop("metadata", None)
+            try:
+                resp = _run_hindsight(self._client.aretain, **retain_kwargs)
+            except TypeError:
+                resp = _run_hindsight(self._client.aretain, bank_id=bank_id, content=content)
+        return {"bank_id": bank_id, "response": resp, "metadata": meta}
 
     def recall(self, user_id: str, query: str, *, limit: int = 12) -> list[dict[str, Any]]:
         bank_id = self.ensure_bank(user_id)

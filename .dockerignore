@@ -28,6 +28,7 @@ htmlcov/
 .eggs/
 dist/
 build/
+web/kivi-ui/node_modules/
 
 # Virtualenvs
 .venv/
@@ -39,11 +40,7 @@ artifacts/runtime/
 artifacts/reports/
 artifacts/evals/
 
-# Baseline tarballs (Path A restore; not needed inside app image)
-ops/baseline-volumes/*.tar.gz
-
-# Corpus JSONL mounted read-only in compose
-data/corpus/
+# Baseline tarballs + corpus are baked in for Docker Hub auto-init (docker-compose.hub.yml)
 
 # Docs — not needed to run API (evals/ included for optional in-container pytest)
 docs/

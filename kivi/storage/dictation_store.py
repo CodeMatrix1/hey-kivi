@@ -35,6 +35,31 @@ def _connect(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
+def _dictations_table_needs_composite_pk_migration(conn: sqlite3.Connection) -> bool:
+    """True when dictations still uses a global ``id`` primary key (legacy schema)."""
+    rows = conn.execute("PRAGMA table_info(dictations)").fetchall()
+    if not rows:
+        return False
+    pk_cols = sorted((int(row[5]), str(row[1])) for row in rows if int(row[5]) > 0)
+    return pk_cols == [(1, "id")]
+
+
+def _dictations_create_sql() -> str:
+    return """
+        CREATE TABLE IF NOT EXISTS dictations (
+            user_id TEXT NOT NULL,
+            id TEXT NOT NULL,
+            asr TEXT NOT NULL,
+            formatted TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            extra_json TEXT DEFAULT '{}',
+            PRIMARY KEY (user_id, id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_dict_user_time
+            ON dictations(user_id, created_at);
+    """
+
+
 def _row_to_record(row: sqlite3.Row | dict[str, Any]) -> DictationRecord:
     data = dict(row)
     return DictationRecord(
@@ -54,17 +79,8 @@ class DictationStore:
     def _init_schema(self) -> None:
         with _connect(self.db_path) as conn:
             conn.executescript(
-                """
-                CREATE TABLE IF NOT EXISTS dictations (
-                    id TEXT PRIMARY KEY,
-                    user_id TEXT NOT NULL,
-                    asr TEXT NOT NULL,
-                    formatted TEXT NOT NULL,
-                    created_at TEXT NOT NULL,
-                    extra_json TEXT DEFAULT '{}'
-                );
-                CREATE INDEX IF NOT EXISTS idx_dict_user_time
-                    ON dictations(user_id, created_at);
+                _dictations_create_sql()
+                + """
                 CREATE TABLE IF NOT EXISTS corpus_ingestions (
                     user_id TEXT NOT NULL,
                     dictation_id TEXT NOT NULL,
@@ -83,6 +99,7 @@ class DictationStore:
                 """
             )
             self._migrate_drop_app_topic_channel(conn)
+            self._migrate_composite_primary_key(conn)
             self._init_fts(conn)
 
     def _init_fts(self, conn: sqlite3.Connection) -> None:
@@ -130,18 +147,49 @@ class DictationStore:
         }
         if not cols.intersection({"app", "topic", "channel"}):
             return
+        conn.execute("DROP TRIGGER IF EXISTS dictations_fts_insert")
+        conn.execute("DROP TABLE IF EXISTS dictations_fts")
         conn.executescript(
             """
             CREATE TABLE IF NOT EXISTS dictations_new (
-                id TEXT PRIMARY KEY,
                 user_id TEXT NOT NULL,
+                id TEXT NOT NULL,
                 asr TEXT NOT NULL,
                 formatted TEXT NOT NULL,
                 created_at TEXT NOT NULL,
-                extra_json TEXT DEFAULT '{}'
+                extra_json TEXT DEFAULT '{}',
+                PRIMARY KEY (user_id, id)
             );
-            INSERT INTO dictations_new (id, user_id, asr, formatted, created_at, extra_json)
-            SELECT id, user_id, asr, formatted, created_at,
+            INSERT INTO dictations_new (user_id, id, asr, formatted, created_at, extra_json)
+            SELECT user_id, id, asr, formatted, created_at,
+                   COALESCE(extra_json, '{}')
+            FROM dictations;
+            DROP TABLE dictations;
+            ALTER TABLE dictations_new RENAME TO dictations;
+            CREATE INDEX IF NOT EXISTS idx_dict_user_time
+                ON dictations(user_id, created_at);
+            """
+        )
+
+    def _migrate_composite_primary_key(self, conn: sqlite3.Connection) -> None:
+        """Scope dictation ids per user instead of globally unique ids."""
+        if not _dictations_table_needs_composite_pk_migration(conn):
+            return
+        conn.execute("DROP TRIGGER IF EXISTS dictations_fts_insert")
+        conn.execute("DROP TABLE IF EXISTS dictations_fts")
+        conn.executescript(
+            """
+            CREATE TABLE dictations_new (
+                user_id TEXT NOT NULL,
+                id TEXT NOT NULL,
+                asr TEXT NOT NULL,
+                formatted TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                extra_json TEXT DEFAULT '{}',
+                PRIMARY KEY (user_id, id)
+            );
+            INSERT INTO dictations_new (user_id, id, asr, formatted, created_at, extra_json)
+            SELECT user_id, id, asr, formatted, created_at,
                    COALESCE(extra_json, '{}')
             FROM dictations;
             DROP TABLE dictations;

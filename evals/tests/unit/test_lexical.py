@@ -55,7 +55,7 @@ def _settings(tmp_path: Path) -> Settings:
 
 @pytest.fixture()
 def stores(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("KIVI_SAVE_CHATS", "true")
+    monkeypatch.setenv("KIVI_CHAT", "true")
     settings = _settings(tmp_path)
     store = DictationStore(settings.db_path)
     lex = LexicalStore(settings.db_path)

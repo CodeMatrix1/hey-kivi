@@ -286,17 +286,29 @@ def test_find_dictation_still_routes_dictation():
     assert flags["wants_dictation"] is True
 
 
-def test_find_polish_suppresses_cross_recall():
-    message = (
-        "Find my note that mentions Trivandrum and polish it using my place-name preferences."
-    )
+def test_polish_only_stays_dictation_only():
+    message = "Polish my Goa note for sharing with a friend."
     flags = interpret_turn(message, json_llm=None)
     assert flags["wants_dictation"] is True
     assert flags["wants_cross_recall"] is False
 
 
+def test_find_note_with_pull_together_sets_both_flags():
+    message = (
+        "Find my note about the payments review and summarize what I've said about it."
+    )
+    flags = interpret_turn(message, json_llm=None)
+    assert flags["wants_dictation"] is True
+    assert flags["wants_cross_recall"] is True
+
+
 def test_what_did_i_tell_triggers_cross_recall():
     flags = interpret_rules("What did I tell you about my sister Maya?")
+    assert flags["wants_cross_recall"] is True
+
+
+def test_what_exam_preparing_triggers_cross_recall():
+    flags = interpret_rules("What exam am I preparing for?")
     assert flags["wants_cross_recall"] is True
 
 

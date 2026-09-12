@@ -81,7 +81,7 @@ def run_corpus_eval(
     backend: str = "stub",
     limit: int | None = None,
 ) -> dict[str, Any]:
-    os.environ["KIVI_SAVE_CHATS"] = "true"
+    os.environ["KIVI_CHAT"] = "true"
     work = Path(tempfile.mkdtemp(prefix="kivi2_corpus_eval_"))
     db_path = work / "eval.sqlite3"
     settings = Settings(

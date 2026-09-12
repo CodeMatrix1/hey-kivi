@@ -27,7 +27,7 @@ Generated eval output: `../artifacts/evals/` (e.g. `last_run.json`).
 | `tests/unit/` | `test_find.py` | FTS5 find, find_params, dictation selection |
 | `tests/unit/` | `test_lexical.py` | Extract, store, resolve lexical mappings |
 | `tests/unit/` | `test_routing.py` | Interpret rules, cross-recall, provenance cards |
-| `tests/agent/` | `test_agent.py` | Full chat turns, metrics, save_chats |
+| `tests/agent/` | `test_agent.py` | Full chat turns, metrics, kivi_chat retain |
 | `tests/corpus/` | `test_corpus.py` | JSONL import, checkpoints, formatting |
 | `tests/contract/` | `test_api.py` | HTTP API response contract |
 | `tests/scenario/` | `test_runners.py` | demo_cases + query_cases + integrity JSON runners |

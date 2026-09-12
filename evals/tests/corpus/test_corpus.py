@@ -10,6 +10,7 @@ Tests:
 - test_lexical_canonicalization_used_but_asr_preserved — retain uses canonical text; SQLite keeps original ASR
 - test_hindsight_retain_invoked_with_provenance — retained dictation includes source id and metadata provenance
 - test_user_isolation — CLI ``user_id`` overrides JSONL user_id; data isolated per user
+- test_same_dictation_id_allowed_for_different_users — shared corpus ids can import per user
 - test_duplicate_id_is_immutable — changed duplicate id is rejected; first version remains stored
 - test_reimport_of_unchanged_corpus_skips_hindsight_retain — identical re-import skips append-only retain calls
 - test_ingest_jsonl_collects_line_errors — bad lines reported; valid lines in same file still import
@@ -206,6 +207,41 @@ def test_user_isolation(harness):
     assert harness["store"].get("user_b", "d_iso_1") is None
     assert harness["memory"].list_memories("user_a")
     assert harness["memory"].list_memories("user_b") == []
+
+
+def test_same_dictation_id_allowed_for_different_users(harness):
+    """Baseline and Path B users can both own the same corpus dictation id."""
+    shared_id = "hist_001"
+    baseline = DictationRecord(
+        id=shared_id,
+        user_id="golden_goose_eval_user",
+        asr="baseline row",
+        formatted="Baseline row.",
+        created_at="2026-09-01T00:00:00+00:00",
+    )
+    repro = DictationRecord(
+        id=shared_id,
+        user_id="corpus_repro_user",
+        asr="repro row",
+        formatted="Repro row.",
+        created_at="2026-09-01T00:00:00+00:00",
+    )
+    first = ingest_record(
+        baseline,
+        store=harness["store"],
+        lexical_store=harness["lex"],
+        memory=harness["memory"],
+    )
+    second = ingest_record(
+        repro,
+        store=harness["store"],
+        lexical_store=harness["lex"],
+        memory=harness["memory"],
+    )
+    assert first["status"] == "imported"
+    assert second["status"] == "imported"
+    assert harness["store"].get("golden_goose_eval_user", shared_id).formatted == "Baseline row."
+    assert harness["store"].get("corpus_repro_user", shared_id).formatted == "Repro row."
 
 
 def test_duplicate_id_is_immutable(harness):

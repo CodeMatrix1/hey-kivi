@@ -18,6 +18,7 @@ htmlcov/
 .eggs/
 dist/
 build/
+web/kivi-ui/node_modules/
 
 # Virtual environments
 .venv/
@@ -53,9 +54,17 @@ artifacts/reports/*
 corpus/reports/
 evals/artifacts/
 static/
-scripts/
+/scripts/
 /baseline-volumes/
 data/*.sqlite3
+tmp_vol_test/
+
+# Frontend build artifacts (Docker builds web/dist in image)
+web/dist/
+web/kivi-ui/*.tsbuildinfo
+
+# IDE
+.cursor/
 
 # Path A baseline tarballs — commit ops/baseline-volumes/*.tar.gz
 !ops/baseline-volumes/

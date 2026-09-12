@@ -1,0 +1,209 @@
+{
+  "version": 1,
+  "description": "Demo seed conversations for Kivi semantic memory and personalization.",
+  "conversations": [
+    {
+      "id": "conv_demo_recall_maya",
+      "title": "Family visit planning",
+      "createdAt": "2026-09-08T14:00:00.000Z",
+      "updatedAt": "2026-09-08T14:02:00.000Z",
+      "lastUsedAt": "2026-09-08T14:02:00.000Z",
+      "messages": [
+        {
+          "id": "msg_u1",
+          "role": "user",
+          "text": "Remind me where my sister Maya and brother Arjun are based.",
+          "at": "2026-09-08T14:00:00.000Z"
+        },
+        {
+          "id": "msg_a1",
+          "role": "assistant",
+          "text": "Maya is in Pune and Arjun is in Bengaluru.",
+          "at": "2026-09-08T14:01:00.000Z",
+          "trace": {
+            "decision": "answer",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "Maya lives in Pune." },
+              { "text": "Arjun is based in Bengaluru." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "conv_demo_travel_preferences",
+      "title": "Travel preferences",
+      "createdAt": "2026-09-09T10:00:00.000Z",
+      "updatedAt": "2026-09-09T10:03:00.000Z",
+      "lastUsedAt": "2026-09-09T10:03:00.000Z",
+      "messages": [
+        {
+          "id": "msg_u2",
+          "role": "user",
+          "text": "What have I said about how I like to travel by train?",
+          "at": "2026-09-09T10:00:00.000Z"
+        },
+        {
+          "id": "msg_a2",
+          "role": "assistant",
+          "text": "You have mentioned that you prefer window seats when traveling by train.",
+          "at": "2026-09-09T10:01:00.000Z",
+          "trace": {
+            "decision": "answer",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "You prefer window seats when traveling by train." }
+            ]
+          }
+        },
+        {
+          "id": "msg_u3",
+          "role": "user",
+          "text": "Summarize what I have said about my travel preferences.",
+          "at": "2026-09-09T10:02:00.000Z"
+        },
+        {
+          "id": "msg_a3",
+          "role": "assistant",
+          "text": "You prefer trains with window seats and favor trips with a slower pace over packed itineraries.",
+          "at": "2026-09-09T10:03:00.000Z",
+          "trace": {
+            "decision": "answer",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "You prefer window seats when traveling by train." },
+              { "text": "You favor slower-paced trips over packed itineraries." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "conv_demo_payments_review",
+      "title": "Payments review",
+      "createdAt": "2026-09-10T09:00:00.000Z",
+      "updatedAt": "2026-09-10T09:04:00.000Z",
+      "lastUsedAt": "2026-09-10T09:04:00.000Z",
+      "messages": [
+        {
+          "id": "msg_u4",
+          "role": "user",
+          "text": "I have a payments team review coming up. Pull together what I have already said about the review and the presentation work, then give me the key points to bring in.",
+          "at": "2026-09-10T09:00:00.000Z"
+        },
+        {
+          "id": "msg_a4",
+          "role": "assistant",
+          "text": "You had a project review with the payments team on September 8, 2026, and worked on a presentation for the payments review on September 8 and September 10. Your records do not contain specific discussion points, decisions, or outcomes, so I can't reliably infer the key points from them.",
+          "at": "2026-09-10T09:01:00.000Z",
+          "trace": {
+            "decision": "abstain",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "Project review with the payments team on September 8, 2026." },
+              { "text": "Worked on a presentation for the payments review on September 8, 2026." },
+              { "text": "Worked on a presentation for the payments review on September 10, 2026." }
+            ],
+            "reason": "Relevant history exists, but specific review topics and outcomes are not recorded."
+          }
+        }
+      ]
+    },
+    {
+      "id": "conv_demo_reminder_planning",
+      "title": "Review preparation",
+      "createdAt": "2026-09-10T16:00:00.000Z",
+      "updatedAt": "2026-09-10T16:03:00.000Z",
+      "lastUsedAt": "2026-09-10T16:03:00.000Z",
+      "messages": [
+        {
+          "id": "msg_u5",
+          "role": "user",
+          "text": "I need to prepare for my payments review.",
+          "at": "2026-09-10T16:00:00.000Z"
+        },
+        {
+          "id": "msg_a5",
+          "role": "assistant",
+          "text": "Your recent notes show that you've been working on the presentation for the payments review.",
+          "at": "2026-09-10T16:01:00.000Z",
+          "trace": {
+            "decision": "answer",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "You have a payments team review coming up." },
+              { "text": "You worked on a presentation for the payments review." }
+            ]
+          }
+        },
+        {
+          "id": "msg_u6",
+          "role": "user",
+          "text": "I should review the presentation before then.",
+          "at": "2026-09-10T16:02:00.000Z"
+        },
+        {
+          "id": "msg_a6",
+          "role": "assistant",
+          "text": "That sounds like a useful final preparation step for the review.",
+          "at": "2026-09-10T16:03:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "conv_demo_lexical",
+      "title": "Place name preference",
+      "createdAt": "2026-09-11T11:00:00.000Z",
+      "updatedAt": "2026-09-11T11:03:00.000Z",
+      "lastUsedAt": "2026-09-11T11:03:00.000Z",
+      "messages": [
+        {
+          "id": "msg_u7",
+          "role": "user",
+          "text": "Find my dictation from August 20, 2026 around 8:10 PM about Thiruvananthapuram and polish it.",
+          "at": "2026-09-11T11:00:00.000Z"
+        },
+        {
+          "id": "msg_a7",
+          "role": "assistant",
+          "text": "I used your note from Thursday, August 20, 2026 at 20:10 UTC. Please use Thiruvananthapuram instead of Trivandrum.",
+          "at": "2026-09-11T11:01:00.000Z",
+          "trace": {
+            "decision": "answer",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "The user prefers the place name Thiruvananthapuram instead of Trivandrum." }
+            ]
+          }
+        },
+        {
+          "id": "msg_u8",
+          "role": "user",
+          "text": "Find my note that mentions Trivandrum and polish it using my place-name preferences.",
+          "at": "2026-09-11T11:02:00.000Z"
+        },
+        {
+          "id": "msg_a8",
+          "role": "assistant",
+          "text": "I used your note from Wednesday, August 19, 2026 at 14:00 UTC. I'm planning a short weekend trip to Thiruvananthapuram in November.",
+          "at": "2026-09-11T11:03:00.000Z",
+          "trace": {
+            "decision": "answer",
+            "wants_cross_recall": true,
+            "tools_used": ["hindsight_recall"],
+            "memories_considered": [
+              { "text": "The user prefers the place name Thiruvananthapuram instead of Trivandrum." }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

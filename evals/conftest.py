@@ -30,8 +30,8 @@ def stub_memory() -> StubMemory:
 
 
 @pytest.fixture(autouse=True)
-def _enable_save_chats(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("KIVI_SAVE_CHATS", "true")
+def _enable_kivi_chat(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("KIVI_CHAT", "true")
 
 
 @pytest.fixture()
@@ -103,7 +103,7 @@ def _seed_agent_memories(memory: StubMemory, user_id: str) -> None:
 
 @pytest.fixture()
 def agent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("KIVI_SAVE_CHATS", "true")
+    monkeypatch.setenv("KIVI_CHAT", "true")
     db = tmp_path / "kivi.sqlite3"
     settings = Settings(
         hindsight_base_url="http://localhost:8888",
@@ -136,7 +136,7 @@ def agent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 
 @pytest.fixture()
 def no_save_agent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("KIVI_SAVE_CHATS", "false")
+    monkeypatch.setenv("KIVI_CHAT", "false")
     db = tmp_path / "nosave.sqlite3"
     settings = Settings(
         hindsight_base_url="http://localhost:8888",

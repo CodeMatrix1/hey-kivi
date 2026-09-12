@@ -6,6 +6,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any
 
+from hindsight_pipeline_2.kivi.conversation_context import format_continuity_block
 from hindsight_pipeline_2.kivi.capabilities import (
     apply_interpret_to_trace,
     interpret_turn,
@@ -21,7 +22,11 @@ from hindsight_pipeline_2.kivi.memory.hindsight_adapter import get_memory_backen
 from hindsight_pipeline_2.kivi.storage.lexical_bootstrap import ensure_corpus_lexical_bootstrapped
 from hindsight_pipeline_2.kivi.storage.lexical_store import LexicalStore
 from hindsight_pipeline_2.kivi.llm import create_generator, create_text_generator
-from hindsight_pipeline_2.kivi.models import ChatResult, DecisionTrace, DictationRecord
+from hindsight_pipeline_2.kivi.models import ChatResult, DecisionTrace
+
+
+def _env_flag(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() not in {"0", "false", "off", ""}
 
 
 class HeyKiviAgent:
@@ -38,7 +43,8 @@ class HeyKiviAgent:
         lexical_llm: Any | None = None,
     ):
         self.settings = settings or Settings.from_env()
-        self.save_chats = os.getenv("KIVI_SAVE_CHATS", "true").strip().lower() not in {"0", "false", "off"}
+        # Chat → Hindsight retain only (not dictation rows in SQLite).
+        self.kivi_chat = _env_flag("KIVI_CHAT")
         self.store = store or DictationStore(self.settings.db_path)
         self.lexical_store = lexical_store or LexicalStore(self.settings.db_path)
         self.memory = memory_backend or get_memory_backend(self.settings)
@@ -62,7 +68,12 @@ class HeyKiviAgent:
         if callable(close):
             close()
 
-    def chat(self, user_id: str, message: str) -> ChatResult:
+    def chat(
+        self,
+        user_id: str,
+        message: str,
+        context_messages: list[dict[str, str]] | None = None,
+    ) -> ChatResult:
         """Orchestrate: dictation log → lexical → retain → interpret → tools."""
         ensure_corpus_lexical_bootstrapped(
             user_id, store=self.store, lexical_store=self.lexical_store
@@ -70,61 +81,43 @@ class HeyKiviAgent:
         raw = message
         interaction_id = self.store.log_interaction(user_id, "user", raw)
         created_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-        if self.save_chats:
-            # Every user chat turn is also a DictationRecord (source of truth for find/provenance).
-            dictation_id = f"d_chat_{interaction_id}"
-            self.store.add_dictation(
-                DictationRecord(
-                    id=dictation_id,
-                    user_id=user_id,
-                    asr=raw,
-                    formatted=raw,
-                    created_at=created_at,
-                )
-            )
-            trace = DecisionTrace(
-                source_interactions=[interaction_id],
-                source_dictation_id=dictation_id,
-            )
-            canonical, lex_parts = run_lexical_learn(
-                user_id=user_id,
-                raw=raw,
-                interaction_id=interaction_id,
-                lexical_store=self.lexical_store,
-                lexical_llm=self.lexical_llm,
-                trace=trace,
-            )
-            parts: list[str] = []
-            parts.extend(lex_parts)
+        trace = DecisionTrace(
+            source_interactions=[interaction_id],
+            source_dictation_id=None,
+        )
+        canonical, lex_parts = run_lexical_learn(
+            user_id=user_id,
+            raw=raw,
+            interaction_id=interaction_id,
+            lexical_store=self.lexical_store,
+            lexical_llm=self.lexical_llm,
+            trace=trace,
+        )
+        parts: list[str] = []
+        parts.extend(lex_parts)
 
+        intent = interpret_turn(canonical, self.json_llm)
+        apply_interpret_to_trace(trace, intent)
+
+        # Retain substantive chat only — not recall queries or dictation/find tool turns.
+        if self.kivi_chat and not intent.get("wants_cross_recall") and not intent.get(
+            "wants_dictation"
+        ):
             run_semantic_retain(
                 memory=self.memory,
                 user_id=user_id,
                 canonical=canonical,
                 trace=trace,
-                source_dictation_id=dictation_id,
+                source_interaction_id=interaction_id,
                 created_at=created_at,
+                kivi_chat=True,
             )
-        else:
-            trace = DecisionTrace(
-                source_interactions=[interaction_id],
-                source_dictation_id=None,
-            )
-            parts: list[str] = []
-            # Still run lexical learn so any explicit mappings are recorded,
-            # but skip dictation retention + semantic retain.
-            canonical, lex_parts = run_lexical_learn(
-                user_id=user_id,
-                raw=raw,
-                interaction_id=interaction_id,
-                lexical_store=self.lexical_store,
-                lexical_llm=self.lexical_llm,
-                trace=trace,
-            )
-            parts.extend(lex_parts)
 
-        intent = interpret_turn(canonical, self.json_llm)
-        apply_interpret_to_trace(trace, intent)
+        continuity_block = (
+            format_continuity_block(context_messages, canonical)
+            if context_messages
+            else None
+        )
 
         if intent.get("wants_cross_recall"):
             parts.extend(
@@ -137,6 +130,7 @@ class HeyKiviAgent:
                     selection_llm=self.json_llm,
                     store=self.store,
                     trace=trace,
+                    continuity_context=continuity_block,
                 )
             )
 
@@ -156,9 +150,10 @@ class HeyKiviAgent:
             )
 
         if not intent.get("wants_cross_recall") and not intent.get("wants_dictation"):
+            llm_message = continuity_block if continuity_block else canonical
             parts.extend(
                 run_general_chat(
-                    message=canonical,
+                    message=llm_message,
                     text_llm=self.text_llm,
                     trace=trace,
                     lexical_notes=lex_parts,

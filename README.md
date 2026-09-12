@@ -11,11 +11,25 @@ Golden Goose submission: a self-contained chat agent with **Hindsight** durable 
 ## What it does
 
 1. **Lexical mappings (Kivi)** — LLM extract → validate → SQLite → deterministic resolve (alias→canonical).
-2. **Semantic memory (Hindsight)** — canonical user text retained; cross-recall synthesizes answers from prior memories.
+2. **Semantic memory (Hindsight)** — dictations and (optionally) substantive chat retained; cross-recall synthesizes answers from prior memories.
 3. **Find & polish** — deterministic FTS5 `find_dictations` → optional LLM polish → lexical resolve on stored dictations.
 4. **Corpus import** — JSONL → SQLite (append-only) → lexical canonicalize → Hindsight retain with provenance.
+5. **Product UI (React)** — multi-conversation chat, history, reminders, personalization, settings; developer tools for query library and traces.
 
-**Hard rules:** never create durable memory from Kivi’s own output; prefer fewer high-quality memories; polish applies on the find path only (chat dictations store `asr=formatted=raw` at save time).
+**Hard rules:** never create durable memory from Kivi’s own output; prefer fewer high-quality memories; polish applies on the find path only.
+
+### Chat vs dictation vs memory (important)
+
+| Path | SQLite `dictations` | Hindsight retain | Tag / provenance |
+|------|-------------------|------------------|------------------|
+| **Live chat** (`KIVI_CHAT=true`) | No | Yes, substantive turns only | `kivi_chat=true`, `source_interaction_id` |
+| **Recall / find turns** | No | Skipped | — |
+| **Text note** (`POST /dictations`) | Yes (`d_note_*`) | Yes (full ingest pipeline) | `source_dictation_id` |
+| **Corpus import** | Yes | Yes | `source_dictation_id` |
+
+Chat and dictation memories land in the **same Hindsight bank** per user (`{HINDSIGHT_BANK_PREFIX}_{user_id}`), differentiated by provenance headers.
+
+**UI conversations** (sidebar threads) live in **browser localStorage only** — not on the server. Optional demo threads load from `web/assets/demo_chats.json` (see [Demo chat seed](#demo-chat-seed)).
 
 ## Architecture
 
@@ -25,14 +39,12 @@ Golden Goose submission: a self-contained chat agent with **Hindsight** durable 
 flowchart TD
   ui[Chat UI or POST /chat] --> agent[HeyKiviAgent.chat]
   agent --> log1[log_interaction user → SQLite]
-  agent --> save{KIVI_SAVE_CHATS?}
-  save -->|true| dict[add_dictation d_chat_* asr=raw formatted=raw]
-  save -->|true| lex[run_lexical_learn → canonical]
-  save -->|true| retain[run_semantic_retain → Hindsight]
-  save -->|false| lexonly[lexical learn only]
+  agent --> lex[run_lexical_learn → canonical]
   lex --> interpret[interpret_turn]
-  lexonly --> interpret
-  retain --> interpret
+  interpret --> chatretain{KIVI_CHAT and general chat?}
+  chatretain -->|true| retain[run_semantic_retain kivi_chat → Hindsight]
+  chatretain -->|false| route
+  retain --> route
   interpret --> route{wants_dictation / wants_cross_recall?}
   route --> dictation[run_dictation]
   route --> recall[run_cross_recall]
@@ -84,37 +96,100 @@ Default pytest uses **StubMemory** (no Docker, no API keys). See [Tests](#tests)
 ```bash
 cd hindsight_pipeline_2
 cp .env.example .env   # set GROQ_API_KEY
-# Path A: restore ops/baseline-volumes (see docs/RUN.md §5b)
+# Path A: restore ops/baseline-volumes (see docs/RUN.md §4b)
 docker compose --env-file .env up --build -d
 curl http://localhost:8002/stats/golden_goose_eval_user
 ```
 
-Open http://localhost:8002 — use the **Query library** tab (requires import or snapshot). **Seed demo** is Developer-only and wipes SQLite for the current user.
+Open http://localhost:8002 — **kivi-ui** chat (sidebar: chats, history, reminders, personalization). Query library is under **Settings → Developer tools** (requires baseline or import for recall probes).
 
 **LLM providers:** Hey Kivi internal LLM supports **Groq or Gemini only** (`LLM_PROVIDER`). Hindsight uses separate container env vars. OpenAI / LiteLLM are not supported.
 
 Full commands: [docs/RUN.md](docs/RUN.md).
 
+**Enable chat retain for demos:** set `KIVI_CHAT=true` in `.env` (substantive chat → Hindsight; not dictation rows). Rebuild UI after `web/kivi-ui` changes: `cd web/kivi-ui && npm run build`.
+
+## Docker Hub (published image)
+
+**Image:** [`codesentinnel/hey-kivi:latest`](https://hub.docker.com/r/codesentinnel/hey-kivi)
+
+Includes app code + baseline tarballs. On first boot, `init-baseline` seeds Hindsight and SQLite volumes (506 dictations for `golden_goose_eval_user`). You still need a **Groq API key** in `.env`.
+
+```bash
+git clone https://github.com/CodeMatrix1/hey-kivi.git hindsight_pipeline_2
+cd hindsight_pipeline_2
+cp .env.example .env   # set GROQ_API_KEY
+
+docker compose -f docker-compose.hub.yml --env-file .env up -d
+curl http://localhost:8002/stats/golden_goose_eval_user
+```
+
+Expect `dictations: 506`, `hindsight_memories: 649`. Chat UI: http://localhost:8002
+
+Override image tag: `HEY_KIVI_IMAGE=codesentinnel/hey-kivi:1.0.0` in `.env` or shell.
+
+**Build and push** (maintainers):
+
+```bash
+docker build -f ops/docker/Dockerfile -t codesentinnel/hey-kivi:latest .
+docker tag codesentinnel/hey-kivi:latest codesentinnel/hey-kivi:1.0.0
+docker push codesentinnel/hey-kivi:latest
+docker push codesentinnel/hey-kivi:1.0.0
+```
+
+## Product UI (`web/kivi-ui`)
+
+Built with Vite + React; output served at `/` from `web/dist/`.
+
+| Surface | Storage | Description |
+|---------|---------|-------------|
+| **Chats** | `localStorage` (`kivi_conversations_v1`) | Multi-turn threads; sends `context_messages` with `/chat` for continuity |
+| **History** | Server SQLite | Browse dictations; **Add to history** posts text notes via `POST /dictations` |
+| **Reminders** | `localStorage` (`kivi_reminders_v1`) | Client-side; triggered when message contains **remind** + today/tomorrow/date/time |
+| **Personalization** | Server SQLite lexical + local learning feed | Edit preferences; `POST /lexical/{user_id}/preference` |
+| **Settings** | — | User id, load/clear demo chats, link to developer tools |
+| **Developer tools** | — | Query library (`query_cases.json`), decision traces, metrics |
+
+New-chat welcome screen summarizes Recall, History, Prepare, and Reminders (no starter prompt grid).
+
+### Demo chat seed
+
+Pre-filled sidebar threads for reviewers — **UI only**, not ingested into Hindsight.
+
+| Trigger | Behavior |
+|---------|----------|
+| First visit (empty sidebar) | Auto-import from `web/assets/demo_chats.json` |
+| **Settings → Load demo chats** | Merge conversations (skip duplicate `id`s) |
+| `?seed_chats=1` in URL | Merge on page load |
+
+**Authoring:** edit `web/assets/demo_chats.json`. Full schema: [`web/assets/DEMO_CHATS.md`](web/assets/DEMO_CHATS.md).
+
+Pair demo chats with **baseline Hindsight + dictations** (Path A) so recall/find content matches live probes. Demo chat `trace` blocks are illustrative for the UI “From history” panel; they do not write to the server.
+
 ## User control
 
-- **See why** — Developer tab shows `DecisionTrace` on every turn.
+- **See why** — Developer tools show `DecisionTrace` on every turn; assistant replies can show **From history** provenance cards.
 - **Refuse when unsupported** — cross-recall and find abstain instead of inventing facts.
-- **Teach spelling/names** — explicit corrections create lexical mappings in chat.
-- **Forget / reset** — no in-app forget UI; engineers use `docker compose down -v` or re-import after `clear_user`.
-- **Provenance** — parent dictation ids are tracked in SQLite `corpus_ingestions`, not natively in Hindsight memory cards.
+- **Teach spelling/names** — explicit corrections create lexical mappings in chat; editable under personalization.
+- **Reminders** — confirm before save; dismiss removes; sidebar rail shows upcoming.
+- **Forget / reset** — clear conversations in Settings (local only); engineers reset server state with `docker compose down -v` or re-import after `clear_user`.
+- **Provenance** — dictation ids in SQLite `corpus_ingestions`; chat retains use `source_interaction_id` in Hindsight headers.
 
 ## API endpoints (port 8002)
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/` | Chat HTML UI |
-| `GET` | `/health` | `{ok, memory_backend, hindsight_base_url, require_llm, llm_loaded, db_path}` |
-| `POST` | `/chat` | `{message, user_id}` → `{reply, trace, metrics}` |
-| `POST` | `/seed` | Seed demo dictations + lexical (+ Hindsight when reachable) |
-| `POST` | `/corpus/import` | JSONL → SQLite → lexical → Hindsight retain |
-| `GET` | `/memories/{user_id}` | List Hindsight memories |
+| `GET` | `/` | Chat UI (`web/dist/`) |
+| `GET` | `/health` | `{ok, memory_backend, kivi_chat, ui_asset_version, default_user_id, …}` |
+| `POST` | `/chat` | `{message, user_id, context_messages?}` → `{reply, trace, metrics}` |
+| `POST` | `/dictations/{user_id}` | Add text note to history (`{text}`) → full ingest + Hindsight retain |
 | `GET` | `/dictations/{user_id}` | List SQLite dictations |
+| `POST` | `/lexical/{user_id}/preference` | Upsert lexical mappings `{preferred, inputs, previous_preferred?}` |
 | `GET` | `/lexical/{user_id}` | Active lexical mappings |
+| `POST` | `/seed` | Reset user SQLite demo dictations + lexical (optional Hindsight via CLI) |
+| `POST` | `/corpus/import` | JSONL → SQLite → lexical → Hindsight retain |
+| `GET` | `/memories/{user_id}` | Sample Hindsight memories + count |
+| `GET` | `/stats/{user_id}` | Dictation + memory counts for review |
 
 ## Decision trace glossary
 
@@ -135,11 +210,11 @@ Every `/chat` response includes a `trace` object and a `metrics` block:
 | `memories_retained/ignored/updated` | Lexical pipeline |
 | `memories_considered`, `retrieval_backend`, `retrieval_query` | Recall hits (`hindsight` or `none`); each card may include `source_dictation_id` |
 | `find_query`, `candidates`, `selected_dictation_id` | Dictation find path |
-| `source_interactions`, `source_dictation_id` | Provenance (`d_chat_*` per turn) |
+| `source_interactions`, `source_dictation_id` | Provenance (chat: interaction id; dictation: `d_*` / `d_note_*`) |
 | `tools_used`, `decision`, `reason` | Outcome (`answer` \| `abstain`) |
 | `llm_calls` | `[{step, source, output}]` per LLM/rules step |
 
-Example abstain trace:
+Example abstain trace (recall queries do not semantic-retain when `KIVI_CHAT=true`):
 
 ```json
 {
@@ -147,14 +222,13 @@ Example abstain trace:
   "trace": {
     "wants_dictation": false,
     "wants_cross_recall": true,
-    "semantic_retain": true,
+    "semantic_retain": false,
     "memories_considered": [],
     "retrieval_backend": "hindsight",
-    "retrieval_query": "What have I been working on for the Kivi meeting?",
     "tools_used": ["hindsight_recall"],
     "decision": "abstain",
     "reason": "No relevant durable memories for cross-recall.",
-    "source_dictation_id": "d_chat_i_abc123",
+    "source_interactions": ["i_abc123"],
     "llm_calls": [{"step": "interpret", "source": "llm", "output": {}}]
   }
 }
@@ -198,7 +272,7 @@ Each `test_*.py` file lists every test and what it covers in its **module docstr
 | `tests/scenario/` | JSON case runners wired correctly | Stub |
 | CLI `runner` / `corpus_runner` / `query_probe` | Integration against live stack | Hindsight (Docker) |
 
-### Pytest (offline — 75 tests, no Docker)
+### Pytest (offline — 105 tests, no Docker)
 
 ```bash
 pip install -r requirements.txt
@@ -243,7 +317,7 @@ Reports: `artifacts/reports/<stem>_<timestamp>.json`.
 **Pinned submission artifacts:**
 - `artifacts/evals/last_run.json` — offline stub quality suite (8 cases, no API keys)
 - `artifacts/reports/kivi_corpus_500_history.latest.json` — documents **baseline generation** for `golden_goose_eval_user` (historical path `corpus/…` in the report metadata is from the original import run)
-- `artifacts/reports/query_probe.latest.json` — live HTTP probe against Path A baseline (regenerate via §8c)
+- `artifacts/reports/query_probe.latest.json` — live HTTP probe against Path A baseline (regenerate via §7c)
 
 After editing `evals/cases/query_cases.json`:
 
@@ -278,8 +352,8 @@ python -m hindsight_pipeline_2.ops.scripts.state_snapshot --user-id demo_user
 hindsight_pipeline_2/
   paths.py              # Central filesystem paths (package root)
   kivi/                 # Application code
-    agent.py, api.py, config.py, models.py
-    capabilities/       # interpret, cross_recall, dictation, lexical_learn, …
+    agent.py, api.py, config.py, models.py, conversation_context.py
+    capabilities/       # interpret, cross_recall, dictation, lexical_learn, semantic_retain, …
     storage/            # dictation_store, lexical_store, lexical
     memory/             # hindsight_adapter, stub_memory
     lexical/            # lexical_extract
@@ -290,8 +364,9 @@ hindsight_pipeline_2/
     runtime/            # kivi.sqlite3 (Docker volume mount)
     reports/            # ingest + query_probe JSON
     evals/              # last_run.json
-  web/chat/             # Chat UI (served at /static/chat/)
-  web/assets/           # query_cases.json for Query library
+  web/kivi-ui/          # React product UI source
+  web/dist/             # Vite build output (served at /)
+  web/assets/           # Static JSON + docs (query_cases, demo_chats)
   ops/docker/           # Dockerfile + compose
   ops/scripts/          # restore/snapshot baseline, state_snapshot
   ops/baseline-volumes/ # Path A tarballs
@@ -311,7 +386,7 @@ hindsight_pipeline_2/
 | `KIVI2_DB_PATH` | `artifacts/runtime/kivi.sqlite3` | SQLite path |
 | `KIVI_API_PORT` | `8002` | API listen port |
 | `KIVI_REQUIRE_LLM` | `true` | `false` for rules-only offline |
-| `KIVI_SAVE_CHATS` | `false` | `true` saves chat turns as dictations + semantic retain |
+| `KIVI_CHAT` | `false` | `true` retains substantive chat to Hindsight (`kivi_chat=true`; not dictation rows) |
 
 Template: [`.env.example`](.env.example) → copy to `hindsight_pipeline_2/.env` for Docker.
 
@@ -331,10 +406,13 @@ Schema is applied automatically on first API start (`DictationStore._init_schema
 
 ## Limitations (Phase 1)
 
-- No speech ASR, Accept/Reject UI, or LangGraph orchestration
+- No speech ASR pipeline in UI; history notes are text (`POST /dictations` or corpus import)
+- **Reminders** are browser-local only (no server push/notifications)
+- **Demo chats** (`demo_chats.json`) do not ingest into Hindsight — pair with baseline/corpus for live recall
 - Find uses deterministic FTS + calendar filters; polish requests return one note when possible
 - Corpus `lexical_*` rows bootstrap SQLite mappings on first chat (e.g. Trivandrum → Thiruvananthapuram)
 - Ollama/embeddings not required (Hindsight handles semantic retain/recall)
+- `KIVI_CHAT` defaults `false` in compose — enable in `.env` to retain substantive live chat to Hindsight
 - docs/POSITIONING.md / docs/VISION.md are user-authored submission docs
 
 ## Manual SQLite inspection

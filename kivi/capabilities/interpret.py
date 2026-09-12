@@ -41,6 +41,8 @@ def interpret_rules(message: str) -> dict[str, Any]:
             r"|what kind of .+ would suit me"
             r"|how (?:should|do) you spell my name"
             r"|what have i said about"
+            r"|what .+ am i preparing"
+            r"|what exam am i preparing"
             r"|which .+ have i (?:only )?(?:considered|confirmed|booked)"
             r"|did i actually confirm or book"
             r"|what preferences should shape",
@@ -63,30 +65,20 @@ def _merge_with_rules(llm_flags: dict[str, bool], rules: dict[str, Any]) -> dict
     return merged
 
 
-def _apply_dictation_priority(message: str, flags: dict[str, bool]) -> dict[str, bool]:
-    """Find/polish turns use dictation only — cross-recall would duplicate or conflict."""
-    lower = message.lower()
-    if flags.get("wants_dictation") and re.search(
-        r"\b(find|polish|open|show|fetch|get)\b", lower
-    ):
-        flags["wants_cross_recall"] = False
-    return flags
-
-
 def interpret_turn(message: str, json_llm: Any) -> dict[str, Any]:
     """Return routing flags plus `_llm_source` / `_llm_output` for the trace."""
     rules = interpret_rules(message)
     if json_llm is not None:
         try:
             raw = llm_json(json_llm, INTERPRET_SYSTEM, message)
-            merged = _apply_dictation_priority(message, _merge_with_rules(raw, rules))
+            merged = _merge_with_rules(raw, rules)
             return {
                 **merged,
                 "_llm_source": "llm",
                 "_llm_output": raw,
             }
         except Exception as exc:  # noqa: BLE001
-            merged = _apply_dictation_priority(message, dict(rules))
+            merged = dict(rules)
             return {
                 **merged,
                 "_llm_source": "fallback",
@@ -96,7 +88,7 @@ def interpret_turn(message: str, json_llm: Any) -> dict[str, Any]:
                     "wants_cross_recall": merged["wants_cross_recall"],
                 },
             }
-    merged = _apply_dictation_priority(message, dict(rules))
+    merged = dict(rules)
     return {
         **merged,
         "_llm_source": "rules",

@@ -51,7 +51,7 @@ services:
       HINDSIGHT_RECALL_BUDGET: ${HINDSIGHT_RECALL_BUDGET:-mid}
       KIVI2_DB_PATH: /app/hindsight_pipeline_2/artifacts/runtime/kivi.sqlite3
       KIVI_REQUIRE_LLM: ${KIVI_REQUIRE_LLM:-true}
-      KIVI_SAVE_CHATS: ${KIVI_SAVE_CHATS:-false}
+      KIVI_CHAT: ${KIVI_CHAT:-false}
       KIVI_DEFAULT_USER_ID: ${KIVI_DEFAULT_USER_ID:-golden_goose_eval_user}
       LLM_PROVIDER: ${LLM_PROVIDER:-groq}
       GROQ_API_KEY: ${GROQ_API_KEY:?Set GROQ_API_KEY in .env}

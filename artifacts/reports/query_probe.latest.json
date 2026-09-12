@@ -1,0 +1,2698 @@
+{
+  "generated_at": "2026-09-11T22:31:51+00:00",
+  "base_url": "http://localhost:8002",
+  "user_id": "golden_goose_eval_user",
+  "total": 16,
+  "ok": 16,
+  "failed": 0,
+  "results": [
+    {
+      "id": "recall-maya-arjun",
+      "message": "I am arranging a family visit. Remind me where my sister Maya and my brother Arjun are based.",
+      "reply": "Your sister Maya is based in Pune, and your brother Arjun is based in Bengaluru.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "f918023c-9b8e-446b-bbb1-e0a032d8dadc",
+            "type": "Memory",
+            "text": "User mentioned that Arjun is their brother and based in Bengaluru during conversation on day 4 | When: 2026-09-12 | Involving: user"
+          },
+          {
+            "id": "d3e14e1b-be6b-4dca-bacb-56638074c659",
+            "type": "Memory",
+            "text": "User mentioned that Arjun is their brother and based in Bengaluru during conversation on day 3 | Involving: user"
+          },
+          {
+            "id": "3fa94e04-4658-49a4-a423-8e9d9e63f488",
+            "type": "Memory",
+            "text": "User's brother Arjun lives in Bengaluru."
+          },
+          {
+            "id": "157e792e-9d43-428b-8aff-eb0bb38ae004",
+            "type": "Memory",
+            "text": "Maya is my sister and is based in Pune, mentioned during our conversation on day 2 | Involving: user"
+          },
+          {
+            "id": "86b84d4e-c201-45be-8396-5b497b27e5f7",
+            "type": "Memory",
+            "text": "Arjun is the user's brother and is based in Bengaluru | Involving: user"
+          },
+          {
+            "id": "9e88cc6c-082a-494a-bfd2-c26cc48e4299",
+            "type": "Memory",
+            "text": "Arjun is user's brother and based in Bengaluru | Involving: user, Arjun"
+          },
+          {
+            "id": "7605b5a8-f617-4307-8020-d1dc3aad8e24",
+            "type": "Memory",
+            "text": "User's sister Maya lives in Pune."
+          },
+          {
+            "id": "06617a18-dee7-485e-858e-175c74c14b69",
+            "type": "Memory",
+            "text": "User's sister Maya is based in Pune | When: 2026-07-02 | Involving: user"
+          },
+          {
+            "id": "144d2ac9-10e4-44d7-a2f6-3502222c5702",
+            "type": "Memory",
+            "text": "User mentioned that Maya is sister and based in Pune during conversation on day 3 | When: 2026-09-10 | Involving: user"
+          },
+          {
+            "id": "2f5dd547-0ec0-4abe-b422-2c25195a1c8f",
+            "type": "Memory",
+            "text": "User's brother Arjun is currently in Bengaluru | Involving: user"
+          },
+          {
+            "id": "a4af50f3-17d1-4f09-a0db-76b33e40944b",
+            "type": "Memory",
+            "text": "User's brother Arjun is currently in Bengaluru | Involving: user"
+          },
+          {
+            "id": "bcfecd3f-e0b0-48d3-9187-a73ab0bd3e7f",
+            "type": "Memory",
+            "text": "Maya is the user's sister and is based in Pune | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "I am arranging a family visit. Remind me where my sister Maya and my brother Arjun are based.",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_093c99659117"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "I am arranging a family visit. Remind me where my sister Maya and my brother Arjun are based.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "fallback",
+            "output": {
+              "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '[]'}}"
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Your sister Maya is based in Pune, and your brother Arjun is based in Bengaluru."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 34298.69,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 36,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 38,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "recall-train-seats",
+      "message": "What have I said about how I like to travel by train?",
+      "reply": "You have mentioned that you prefer window seats when traveling by train.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "be17de0a-b31a-4240-bab5-ca14b1245be4",
+            "type": "Memory",
+            "text": "I prefer window seats when I travel by train, and this preference was mentioned while planning something on September 9, 2026. | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d3d222b9-a718-4846-9e70-9fc05e7ffbd2",
+            "type": "Memory",
+            "text": "I prefer window seats when I travel by train. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "e2c9f1ef-8a4d-4e18-9595-5b85879e08e5",
+            "type": "Memory",
+            "text": "The user prefers window seats when traveling by train, and this preference was noted while planning something on day 5. | Involving: user"
+          },
+          {
+            "id": "a9848af4-1459-4154-84a6-5c213f09d772",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train; this preference was noted while planning something on day 5. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "5e323728-6ba6-4113-a46c-6b35b5d3ae8d",
+            "type": "Memory",
+            "text": "Assistant prefers window seats when traveling by train, and this preference came up during planning on day 7. | Involving: assistant"
+          },
+          {
+            "id": "407875ba-aed6-4fb1-9cf8-f1b3cefe6962",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: user"
+          },
+          {
+            "id": "23103c2a-2d68-4a0f-80d6-9554040c4523",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: user"
+          },
+          {
+            "id": "c5965860-bb82-4155-84ed-e83bdd0064f8",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "21bd889b-f0ec-4569-9202-645147530131",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "6056f2ff-44b6-4746-bf71-a22bfa7f57f2",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train | Involving: user"
+          },
+          {
+            "id": "aee4c94f-1b96-4ad7-a703-c5c7951a6968",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train | Involving: user"
+          },
+          {
+            "id": "eb13ab38-c2fa-44c4-b86f-7961cc3a8884",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train | Involving: user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "What have I said about how I like to travel by train?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_b2a9d94043e2"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "What have I said about how I like to travel by train?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "You have mentioned that you prefer window seats when traveling by train."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 51148.37,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 38,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 40,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "recall-travel-summary",
+      "message": "Summarize what I have said about my travel preferences.",
+      "reply": "Based on your previous notes, you prefer trains with window seats. Additionally, you favor trips with a slower pace over packed itineraries.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "be17de0a-b31a-4240-bab5-ca14b1245be4",
+            "type": "Memory",
+            "text": "I prefer window seats when I travel by train, and this preference was mentioned while planning something on September 9, 2026. | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "e2c9f1ef-8a4d-4e18-9595-5b85879e08e5",
+            "type": "Memory",
+            "text": "The user prefers window seats when traveling by train, and this preference was noted while planning something on day 5. | Involving: user"
+          },
+          {
+            "id": "a9848af4-1459-4154-84a6-5c213f09d772",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train; this preference was noted while planning something on day 5. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "fdf53e71-d3bd-4038-957a-310a69f7015c",
+            "type": "Memory",
+            "text": "User prefers trips with a slower pace over packed itineraries; this preference surfaced while planning something on day 5. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "4c598e99-61b7-4480-8b9a-8e95a1ce768b",
+            "type": "Memory",
+            "text": "Assistant is considering a trip to Jaipur and is asking what preferences should shape that trip. | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "5e323728-6ba6-4113-a46c-6b35b5d3ae8d",
+            "type": "Memory",
+            "text": "Assistant prefers window seats when traveling by train, and this preference came up during planning on day 7. | Involving: assistant"
+          },
+          {
+            "id": "2e7b0369-ca2a-41f7-91cd-0edbbe70ca54",
+            "type": "Memory",
+            "text": "The preference about crowded tourist attractions was mentioned during planning on day 5 | When: 2026-09-13 | Involving: user"
+          },
+          {
+            "id": "8b37429a-5fff-427e-931b-f632e1e7299b",
+            "type": "Memory",
+            "text": "User prefers slower pace trips over packed itineraries; this preference was mentioned while planning something on day 7. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "e54f3145-3801-4314-8715-8139bf95ef0a",
+            "type": "Memory",
+            "text": "User prefers trips with a slower pace over packed itineraries; this preference surfaced while planning something on day 7. | When: 2026-07-26 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "3dc87c5a-375f-4658-8c5d-db41d7885bce",
+            "type": "Memory",
+            "text": "User prefers slower pace trips over packed itineraries; this preference surfaced while planning something on day 4 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "f778f01c-7eb2-4da1-a45a-85c118fd5f0c",
+            "type": "Memory",
+            "text": "User prefers slower pace trips over packed itineraries; this preference surfaced during planning on day 8. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d3d222b9-a718-4846-9e70-9fc05e7ffbd2",
+            "type": "Memory",
+            "text": "I prefer window seats when I travel by train. | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "Summarize what I have said about my travel preferences.",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_1a929c7ddd4e"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "Summarize what I have said about my travel preferences.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Based on your previous notes, you prefer trains with window seats. Additionally, you favor trips with a slower pace over packed itineraries."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 8846.71,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 40,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 42,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "recall-food-prefs",
+      "message": "What food preferences have I shared?",
+      "reply": "Based on the provided memories, you have shared the following food and dining preferences:\n\n*   **Vegetarian Meals:** You generally choose vegetarian meals when a good option is available.\n*   **Spice Level:** You dislike very spicy food in general.\n*   **Dining Atmosphere:** You prefer quiet cafes where you can sit for a while.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "66d7694e-0cd4-45ee-b57e-776973a38065",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option; this preference was considered while planning something on day 7. | Involving: user"
+          },
+          {
+            "id": "fdb1cbdd-e13d-4f61-99a4-5ce51955c782",
+            "type": "Memory",
+            "text": "User prefers vegetarian meals when there is a good option | Involving: user"
+          },
+          {
+            "id": "4b295304-bd96-4c5d-915c-720f6789645b",
+            "type": "Memory",
+            "text": "User prefers vegetarian meals when a good option is available. | Involving: user"
+          },
+          {
+            "id": "b26321bc-622a-4fbb-b2b5-7b1279722314",
+            "type": "Memory",
+            "text": "User prefers quiet cafes where they can sit for a while; this preference was mentioned while planning something on day 4. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "3e15cd29-8f05-4381-a01d-ce19a39f8268",
+            "type": "Memory",
+            "text": "User dislikes very spicy food in general | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d4e8d370-a65e-4883-9e80-a06f37783351",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option. | Involving: user"
+          },
+          {
+            "id": "a2efb3c8-ab1b-4b24-bfe5-8dae816f5785",
+            "type": "Memory",
+            "text": "User dislikes very spicy food; this dislike was noted during planning something on day 4. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d011f874-80c0-4ecd-95ec-38b745d468fd",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "5ef08171-142b-4d83-bdb0-c13f757b3c89",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "15032254-8ebf-4831-8d0b-a21a456d6a81",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "6972f148-4c32-4b79-baf8-291724fbcadb",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "e3496762-53a9-459e-97ff-0597e42b4955",
+            "type": "Memory",
+            "text": "User usually chooses vegetarian meals when there is a good option | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "What food preferences have I shared?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_d4e42bf5d5be"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "What food preferences have I shared?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Based on the provided memories, you have shared the following food and dining preferences:\n\n*   **Vegetarian Meals:** You generally choose vegetarian meals when a good option is available.\n*   **Spice Level:** You dislike very spicy food in general.\n*   **Dining Atmosphere:** You prefer quiet cafes where you can sit for a while."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 32826.95,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 42,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 44,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "prep-payments-review",
+      "message": "I have a payments team review coming up. Pull together what I have already said about the review and the presentation work, then give me the key points to bring in.",
+      "reply": "Based on your notes, you had a project review with the payments team on September 8, 2026. You also worked on a presentation for this review on the morning of September 10, 2026.\n\nRegarding the specific key points to bring into the presentation or the review itself, there are no details recorded in your notes about the agenda, findings, decisions, or specific topics discussed. You may want to check your actual presentation file or meeting notes from those dates to retrieve the specific content needed.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "63505de5-e279-41a8-930f-c6aac4ac8c16",
+            "type": "Memory",
+            "text": "User requests to find note about payments team review | Involving: user"
+          },
+          {
+            "id": "14944579-24e7-458d-80ef-401a455c16d4",
+            "type": "Memory",
+            "text": "User worked on a presentation for the payments review this morning | When: Thursday, September 10, 2026 | Involving: user"
+          },
+          {
+            "id": "580658e6-760d-4101-866f-2ff8725d3a2a",
+            "type": "Memory",
+            "text": "I had a project review with the payments team | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "7be524a7-7892-4b68-be9c-2b63208f569e",
+            "type": "Memory",
+            "text": "golden_goose_eval_user worked on a presentation for the payments review earlier this morning, as part of activity log entry 54 | When: 2026-08-13 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d137dafa-fb07-42d5-b0f5-33abba1c3938",
+            "type": "Memory",
+            "text": "User had a project review with the payments team on September 8, 2026, as part of activity log entry 33 | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "20317929-2059-454a-ad37-1e7806942098",
+            "type": "Memory",
+            "text": "Kivi2 had a project review with the payments team | When: Tuesday, September 08, 2026 | Involving: Kivi2 (golden_goose_eval_user), payments team"
+          },
+          {
+            "id": "1859297c-47bf-4db4-aba9-1029e29f328c",
+            "type": "Memory",
+            "text": "User had a project review with the payments team | When: 2026-09-09 | Involving: golden_goose_eval_user, payments team"
+          },
+          {
+            "id": "97a7aaf4-797b-48bc-a8f1-958b8f3373f5",
+            "type": "Memory",
+            "text": "User had a project review with the payments team | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "2d5b75aa-9cd1-4516-9c15-1fb12a862d80",
+            "type": "Memory",
+            "text": "User worked on a presentation for the payments review this morning, as part of activity log entry 22 | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "475e0776-0d06-4f11-ab71-fa82658c3348",
+            "type": "Memory",
+            "text": "User worked on a presentation for the payments review earlier that morning, as part of activity log entry 14. | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "a8fd7894-22b2-4486-ac3b-861ac294646d",
+            "type": "Memory",
+            "text": "User worked on a presentation for the payments review as part of activity log entry 6 | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d94f7932-1d36-432e-8638-03738779a125",
+            "type": "Memory",
+            "text": "User had a project review with the payments team | When: 2026-09-08 | Involving: golden_goose_eval_user, payments team | part of activity log entry 9"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "I have a payments team review coming up. Pull together what I have already said about the review and the presentation work, then give me the key points to bring in.",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_644270859605"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "I have a payments team review coming up. Pull together what I have already said about the review and the presentation work, then give me the key points to bring in.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "fallback",
+            "output": {
+              "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': 'max completion tokens reached before generating a valid document'}}",
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Based on your notes, you had a project review with the payments team on September 8, 2026. You also worked on a presentation for this review on the morning of September 10, 2026.\n\nRegarding the specific key points to bring into the presentation or the review itself, there are no details recorded in your notes about the agenda, findings, decisions, or specific topics discussed. You may want to check your actual presentation file or meeting notes from those dates to retrieve the specific content needed."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 30631.06,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 44,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 46,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "find-polish-payments",
+      "message": "Find the dictation where I mentioned the payments team review and polish it into a concise update I can read in the meeting.",
+      "reply": "I used your note from Friday, August 14, 2026 at 10:22 UTC.\n\nThis was part of my recent week: I had a project review with the payments team yesterday.",
+      "trace": {
+        "wants_dictation": true,
+        "wants_cross_recall": false,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "d137dafa-fb07-42d5-b0f5-33abba1c3938",
+            "type": "Memory",
+            "text": "User had a project review with the payments team on September 8, 2026, as part of activity log entry 33 | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "580658e6-760d-4101-866f-2ff8725d3a2a",
+            "type": "Memory",
+            "text": "I had a project review with the payments team | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "d94f7932-1d36-432e-8638-03738779a125",
+            "type": "Memory",
+            "text": "User had a project review with the payments team | When: 2026-09-08 | Involving: golden_goose_eval_user, payments team | part of activity log entry 9"
+          },
+          {
+            "id": "20317929-2059-454a-ad37-1e7806942098",
+            "type": "Memory",
+            "text": "Kivi2 had a project review with the payments team | When: Tuesday, September 08, 2026 | Involving: Kivi2 (golden_goose_eval_user), payments team"
+          },
+          {
+            "id": "5a2c8370-be3e-49db-8fb7-0a4d6ad024dd",
+            "type": "Memory",
+            "text": "Kivi2 (golden_goose_eval_user) had a project review with the payments team on September 9, 2026, as part of activity log entry 49 | When: 2026-09-09 | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "bcd69ac1-ed2d-4f38-ac9f-15d9ee756646",
+            "type": "Memory",
+            "text": "golden_goose_eval_user had a project review with the payments team on 2026-09-08 as part of activity log entry 41 | When: 2026-09-08 | Involving: golden_goose_eval_user, payments team"
+          },
+          {
+            "id": "1859297c-47bf-4db4-aba9-1029e29f328c",
+            "type": "Memory",
+            "text": "User had a project review with the payments team | When: 2026-09-09 | Involving: golden_goose_eval_user, payments team"
+          },
+          {
+            "id": "97a7aaf4-797b-48bc-a8f1-958b8f3373f5",
+            "type": "Memory",
+            "text": "User had a project review with the payments team | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "bb1a37df-e4fe-44a3-9212-b459c691bbc7",
+            "type": "Memory",
+            "text": "Kivi2 (golden_goose_eval_user) had a project review with the payments team | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "164a625c-f6ad-45e2-bbb0-c08d8d73de0e",
+            "type": "Memory",
+            "text": "User worked on a presentation for the payments review this morning, which was part of activity log entry 70 | When: 2026-08-14 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "2d5b75aa-9cd1-4516-9c15-1fb12a862d80",
+            "type": "Memory",
+            "text": "User worked on a presentation for the payments review this morning, as part of activity log entry 22 | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "7be524a7-7892-4b68-be9c-2b63208f569e",
+            "type": "Memory",
+            "text": "golden_goose_eval_user worked on a presentation for the payments review earlier this morning, as part of activity log entry 54 | When: 2026-08-13 | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "meeting This was part of my recent week: i had a project review with the payments team yesterday.",
+        "candidates": [
+          {
+            "id": "hist_421",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-12T07:10:00+00:00",
+            "formatted_preview": "I had a project review with the payments team yesterday. This was part of my activity log entry 41."
+          },
+          {
+            "id": "hist_381",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-08T12:30:00+00:00",
+            "formatted_preview": "I had a project review with the payments team yesterday. This was part of my activity log entry 1."
+          },
+          {
+            "id": "hist_429",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-12T18:54:00+00:00",
+            "formatted_preview": "Earlier, i had a project review with the payments team yesterday. This was part of my activity log entry 49."
+          },
+          {
+            "id": "hist_389",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-08T08:14:00+00:00",
+            "formatted_preview": "Earlier, i had a project review with the payments team yesterday. This was part of my activity log entry 9."
+          },
+          {
+            "id": "hist_437",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-13T14:38:00+00:00",
+            "formatted_preview": "A recent thing that happened: i had a project review with the payments team yesterday. This was part of my activity log entry 57."
+          },
+          {
+            "id": "hist_413",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-11T11:26:00+00:00",
+            "formatted_preview": "I wanted to note that i had a project review with the payments team yesterday. This was part of my activity log entry 33."
+          },
+          {
+            "id": "hist_397",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-09T19:58:00+00:00",
+            "formatted_preview": "A recent thing that happened: i had a project review with the payments team yesterday. This was part of my activity log entry 17."
+          },
+          {
+            "id": "hist_445",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-14T10:22:00+00:00",
+            "formatted_preview": "This was part of my recent week: i had a project review with the payments team yesterday. This was part of my activity log entry 65."
+          },
+          {
+            "id": "hist_405",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-10T15:42:00+00:00",
+            "formatted_preview": "This was part of my recent week: i had a project review with the payments team yesterday. This was part of my activity log entry 25."
+          }
+        ],
+        "selected_dictation_id": "hist_445",
+        "find_query": {
+          "text_query": "payments team review",
+          "date_start": null,
+          "date_end": null,
+          "occasion": "meeting"
+        },
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_dd025fcda519"
+        ],
+        "tools_used": [
+          "find_dictations",
+          "select_dictation_candidate",
+          "polish_dictation"
+        ],
+        "decision": "answer",
+        "reason": "Selected and polished one relevant dictation.",
+        "canonicalized_message": "Find the dictation where I mentioned the payments team review and polish it into a concise update I can read in the meeting.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": true,
+              "wants_cross_recall": false
+            }
+          },
+          {
+            "step": "select_dictation_candidate",
+            "source": "llm",
+            "output": {
+              "selected_ids": [
+                "hist_445"
+              ],
+              "reason": "Most recent dictation containing the requested information about the payments team review."
+            }
+          },
+          {
+            "step": "polish",
+            "source": "llm",
+            "output": "This was part of my recent week: I had a project review with the payments team yesterday."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 77093.15,
+        "llm_call_count": 4,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 46,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 48,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "find-by-time",
+      "message": "Find my dictation from August 20, 2026 around 8:10 PM about Thiruvananthapuram and polish it.",
+      "reply": "I used your note from Thursday, August 20, 2026 at 20:10 UTC.\n\nPlease use Thiruvananthapuram instead of Trivandrum.",
+      "trace": {
+        "wants_dictation": true,
+        "wants_cross_recall": false,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "c15ce4d3-e274-42b8-b966-392803221e83",
+            "type": "Memory",
+            "text": "User prefers to use Thiruvananthapuram instead of Trivandrum | When: 2026-08-20 | Involving: user"
+          },
+          {
+            "id": "17caea73-64bd-4537-8ff2-4277ad5fe69d",
+            "type": "Memory",
+            "text": "User plans a short weekend trip to Trivandrum in November | When: 2026-08-19 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "6da37515-723e-4521-9af7-d6785b540b30",
+            "type": "Memory",
+            "text": "User's cousin Anika is currently in Kochi."
+          },
+          {
+            "id": "e87414c2-d11b-4068-b942-17a063a7ebd0",
+            "type": "Memory",
+            "text": "User was considering a trip to Kochi around the 36th planning note | Involving: user"
+          },
+          {
+            "id": "bb6b8d81-acd9-4881-8e90-b796d904b9a0",
+            "type": "Memory",
+            "text": "User may take a short trip to Kochi later this year | Involving: user"
+          },
+          {
+            "id": "7d70cb71-a012-47c9-ae8a-bbb10c6af6d2",
+            "type": "Memory",
+            "text": "User's friend Rohan is in Chennai."
+          },
+          {
+            "id": "5e96eb56-0e80-4aed-8e45-6149dd5d678c",
+            "type": "Memory",
+            "text": "User was considering a trip to Kochi around the 54th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "19f562de-1fd6-4cd0-8be1-13da8d392b01",
+            "type": "Memory",
+            "text": "User was considering a short trip to Kochi around the 90th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "850e53b6-46fa-4918-82e3-dc37d56be64a",
+            "type": "Memory",
+            "text": "User may take a short trip to Kochi later this year | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "355173b7-82a1-40bb-bdce-b839a525a8b4",
+            "type": "Memory",
+            "text": "User may take a short trip to Kochi later this year | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "8215f93e-5066-4460-a3be-07cf03c6aba2",
+            "type": "Memory",
+            "text": "Kivi2 (golden_goose_eval_user) was considering a trip to Kochi around the 48th planning note | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "075d2a98-3dca-4433-9786-d74612279fe7",
+            "type": "Memory",
+            "text": "User may take a short trip to Kochi later this year, considering it around July 30 | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "general cleanup Please use Thiruvananthapuram instead of Trivandrum.",
+        "candidates": [
+          {
+            "id": "lexical_005",
+            "score": 1.0,
+            "evidence": [
+              "fts",
+              "date_window"
+            ],
+            "created_at": "2026-08-20T20:10:00+00:00",
+            "formatted_preview": "Please use Thiruvananthapuram instead of Trivandrum."
+          }
+        ],
+        "selected_dictation_id": "lexical_005",
+        "find_query": {
+          "text_query": "thiruvananthapuram",
+          "date_start": "2026-08-20T00:00:00+00:00",
+          "date_end": "2026-08-21T00:00:00+00:00",
+          "occasion": null
+        },
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_602ac8c62e43"
+        ],
+        "tools_used": [
+          "find_dictations",
+          "polish_dictation"
+        ],
+        "decision": "answer",
+        "reason": "Selected and polished one relevant dictation.",
+        "canonicalized_message": "Find my dictation from August 20, 2026 around 8:10 PM about Thiruvananthapuram and polish it.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": true,
+              "wants_cross_recall": false
+            }
+          },
+          {
+            "step": "polish",
+            "source": "llm",
+            "output": "Please use Thiruvananthapuram instead of Trivandrum."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 29393.8,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 48,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 50,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "find-polish-train",
+      "message": "Find my note about train seats and polish it for a travel plan.",
+      "reply": "I used your note from Monday, July 20, 2026 at 14:38 UTC.\n\nI prefer window seats when I travel by train.",
+      "trace": {
+        "wants_dictation": true,
+        "wants_cross_recall": false,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "be17de0a-b31a-4240-bab5-ca14b1245be4",
+            "type": "Memory",
+            "text": "I prefer window seats when I travel by train, and this preference was mentioned while planning something on September 9, 2026. | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "e2c9f1ef-8a4d-4e18-9595-5b85879e08e5",
+            "type": "Memory",
+            "text": "The user prefers window seats when traveling by train, and this preference was noted while planning something on day 5. | Involving: user"
+          },
+          {
+            "id": "d3d222b9-a718-4846-9e70-9fc05e7ffbd2",
+            "type": "Memory",
+            "text": "I prefer window seats when I travel by train. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "a9848af4-1459-4154-84a6-5c213f09d772",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train; this preference was noted while planning something on day 5. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "5e323728-6ba6-4113-a46c-6b35b5d3ae8d",
+            "type": "Memory",
+            "text": "Assistant prefers window seats when traveling by train, and this preference came up during planning on day 7. | Involving: assistant"
+          },
+          {
+            "id": "c5965860-bb82-4155-84ed-e83bdd0064f8",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "21bd889b-f0ec-4569-9202-645147530131",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "407875ba-aed6-4fb1-9cf8-f1b3cefe6962",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: user"
+          },
+          {
+            "id": "23103c2a-2d68-4a0f-80d6-9554040c4523",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | Involving: user"
+          },
+          {
+            "id": "2b081e59-6929-493c-aa02-546cbbdb5df9",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train. | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "92bfc260-fab3-46ac-9642-91b1733ea481",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "6056f2ff-44b6-4746-bf71-a22bfa7f57f2",
+            "type": "Memory",
+            "text": "User prefers window seats when traveling by train | Involving: user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "general cleanup I prefer window seats when I travel by train.",
+        "candidates": [
+          {
+            "id": "hist_197",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-20T14:38:00+00:00",
+            "formatted_preview": "I prefer window seats when I travel by train."
+          },
+          {
+            "id": "hist_173",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-18T11:26:00+00:00",
+            "formatted_preview": "I prefer window seats when I travel by train."
+          },
+          {
+            "id": "hist_205",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-21T10:22:00+00:00",
+            "formatted_preview": "One preference of mine: i prefer window seats when I travel by train."
+          },
+          {
+            "id": "hist_189",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-19T18:54:00+00:00",
+            "formatted_preview": "I should mention that i prefer window seats when I travel by train."
+          },
+          {
+            "id": "hist_181",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-19T07:10:00+00:00",
+            "formatted_preview": "One preference of mine: i prefer window seats when I travel by train."
+          },
+          {
+            "id": "hist_165",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-17T15:42:00+00:00",
+            "formatted_preview": "I should mention that i prefer window seats when I travel by train."
+          },
+          {
+            "id": "hist_269",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-27T08:14:00+00:00",
+            "formatted_preview": "I prefer window seats when I travel by train. This came up when I was planning something on day 9."
+          },
+          {
+            "id": "hist_245",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-25T21:02:00+00:00",
+            "formatted_preview": "I prefer window seats when I travel by train. This came up when I was planning something on day 7."
+          },
+          {
+            "id": "hist_221",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-23T17:50:00+00:00",
+            "formatted_preview": "I prefer window seats when I travel by train. This came up when I was planning something on day 5."
+          },
+          {
+            "id": "hist_277",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-28T19:58:00+00:00",
+            "formatted_preview": "One preference of mine: i prefer window seats when I travel by train. This came up when I was planning something on day 9."
+          },
+          {
+            "id": "hist_261",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-27T12:30:00+00:00",
+            "formatted_preview": "I should mention that i prefer window seats when I travel by train. This came up when I was planning something on day 8."
+          },
+          {
+            "id": "hist_253",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-26T16:46:00+00:00",
+            "formatted_preview": "One preference of mine: i prefer window seats when I travel by train. This came up when I was planning something on day 7."
+          },
+          {
+            "id": "hist_237",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-24T09:18:00+00:00",
+            "formatted_preview": "I should mention that i prefer window seats when I travel by train. This came up when I was planning something on day 6."
+          },
+          {
+            "id": "hist_229",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-23T13:34:00+00:00",
+            "formatted_preview": "One preference of mine: i prefer window seats when I travel by train. This came up when I was planning something on day 5."
+          },
+          {
+            "id": "hist_213",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-22T22:06:00+00:00",
+            "formatted_preview": "I should mention that i prefer window seats when I travel by train. This came up when I was planning something on day 4."
+          }
+        ],
+        "selected_dictation_id": "hist_197",
+        "find_query": {
+          "text_query": "train seats",
+          "date_start": null,
+          "date_end": null,
+          "occasion": null
+        },
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_c5e0bbed5268"
+        ],
+        "tools_used": [
+          "find_dictations",
+          "select_dictation_candidate",
+          "polish_dictation"
+        ],
+        "decision": "answer",
+        "reason": "Selected and polished one relevant dictation.",
+        "canonicalized_message": "Find my note about train seats and polish it for a travel plan.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": true,
+              "wants_cross_recall": false
+            }
+          },
+          {
+            "step": "select_dictation_candidate",
+            "source": "fallback",
+            "output": {
+              "error": "Error code: 400 - {'error': {'message': \"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': ''}}"
+            }
+          },
+          {
+            "step": "polish",
+            "source": "llm",
+            "output": "I prefer window seats when I travel by train."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 75136.92,
+        "llm_call_count": 4,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 50,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 52,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "polish-goa-plan",
+      "message": "Polish my Goa weekend planning note for sharing with a friend.",
+      "reply": "I used your note from Friday, August 7, 2026 at 17:20 UTC.\n\nI'm planning a weekend in Goa in December.",
+      "trace": {
+        "wants_dictation": true,
+        "wants_cross_recall": false,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "963367b8-1371-4412-aa90-259b9c414491",
+            "type": "Memory",
+            "text": "User is planning a weekend in Goa in December, considering it around the 73rd planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "9f7c51f4-4d15-437e-8cec-cb1ca2d43e64",
+            "type": "Memory",
+            "text": "User is planning a weekend in Goa in December, considering it around the 37th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "1ca8f14f-a153-43e0-be7e-7d4bb7206ac6",
+            "type": "Memory",
+            "text": "User is planning a weekend in Goa in December, considering it around the 97th planning note. | When: December 2026 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "be30499d-005b-4703-9574-6a3a44822d01",
+            "type": "Memory",
+            "text": "User is planning a weekend in Goa in December, considering it around the 55th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "c3c3ead4-7707-4551-8763-02b3e3234be6",
+            "type": "Memory",
+            "text": "User may end up planning a weekend in Goa in December, considering it around the 25th | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "28bcb793-6699-4e38-8eb5-90c25627d281",
+            "type": "Memory",
+            "text": "User is planning a weekend trip to Goa in December and was considering it around the 1th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "14e0f6eb-c899-40fc-b826-9eedbe2a2eee",
+            "type": "Memory",
+            "text": "Assistant is planning a weekend in Goa in December, considering it around the 43rd planning note | Involving: Kivi2 (assistant)"
+          },
+          {
+            "id": "225e920b-ce9d-485b-bdb9-e331b481a047",
+            "type": "Memory",
+            "text": "User considered planning a weekend in Goa in December around the 85th planning note | When: 2026-08-06 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "e1feb32d-a5fc-4dbe-9c33-bd18950473e7",
+            "type": "Memory",
+            "text": "User plans a weekend in Goa in December, considering it around the 49th planning note. | When: December 2026 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "068c9a09-42ee-4821-a278-57b2ef079cb8",
+            "type": "Memory",
+            "text": "Kivi2 is planning a weekend in Goa in December | Involving: Kivi2"
+          },
+          {
+            "id": "31cda1b8-5f71-4a32-bc83-cbb12a4135c7",
+            "type": "Memory",
+            "text": "Kivi2 (golden_goose_eval_user) is planning a weekend in Goa in December, considering around December 19 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "3cc5bf94-ff88-4d46-b912-e5edd662bc1e",
+            "type": "Memory",
+            "text": "Kivi2 (golden_goose_eval_user) is planning a weekend in Goa in December, considering around the 13th | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "general cleanup I'm planning a weekend in Goa in December.",
+        "candidates": [
+          {
+            "id": "hist_371",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-07T17:20:00+00:00",
+            "formatted_preview": "I'm planning a weekend in Goa in December. I was considering it around the 91th planning note."
+          },
+          {
+            "id": "hist_341",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-04T17:50:00+00:00",
+            "formatted_preview": "I'm planning a weekend in Goa in December. I was considering it around the 61th planning note."
+          },
+          {
+            "id": "hist_311",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-01T17:20:00+00:00",
+            "formatted_preview": "I'm planning a weekend in Goa in December. I was considering it around the 31th planning note."
+          },
+          {
+            "id": "hist_281",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-29T17:50:00+00:00",
+            "formatted_preview": "I'm planning a weekend in Goa in December. I was considering it around the 1th planning note."
+          },
+          {
+            "id": "hist_359",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-05T08:44:00+00:00",
+            "formatted_preview": "For later, i'm planning a weekend in Goa in December. I was considering it around the 79th planning note."
+          },
+          {
+            "id": "hist_329",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-02T08:14:00+00:00",
+            "formatted_preview": "For later, i'm planning a weekend in Goa in December. I was considering it around the 49th planning note."
+          },
+          {
+            "id": "hist_299",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-30T08:44:00+00:00",
+            "formatted_preview": "For later, i'm planning a weekend in Goa in December. I was considering it around the 19th planning note."
+          },
+          {
+            "id": "hist_353",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-05T11:26:00+00:00",
+            "formatted_preview": "A possible plan is that i'm planning a weekend in Goa in December. I was considering it around the 73th planning note."
+          },
+          {
+            "id": "hist_323",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-02T11:56:00+00:00",
+            "formatted_preview": "A possible plan is that i'm planning a weekend in Goa in December. I was considering it around the 43th planning note."
+          },
+          {
+            "id": "hist_293",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-30T11:26:00+00:00",
+            "formatted_preview": "A possible plan is that i'm planning a weekend in Goa in December. I was considering it around the 13th planning note."
+          },
+          {
+            "id": "hist_377",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-07T14:38:00+00:00",
+            "formatted_preview": "I'm thinking ahead about this: i'm planning a weekend in Goa in December. I was considering it around the 97th planning note."
+          },
+          {
+            "id": "hist_365",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-06T21:02:00+00:00",
+            "formatted_preview": "I may end up doing this: i'm planning a weekend in Goa in December. I was considering it around the 85th planning note."
+          },
+          {
+            "id": "hist_347",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-04T15:08:00+00:00",
+            "formatted_preview": "I'm thinking ahead about this: i'm planning a weekend in Goa in December. I was considering it around the 67th planning note."
+          },
+          {
+            "id": "hist_335",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-03T20:32:00+00:00",
+            "formatted_preview": "I may end up doing this: i'm planning a weekend in Goa in December. I was considering it around the 55th planning note."
+          },
+          {
+            "id": "hist_317",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-01T14:38:00+00:00",
+            "formatted_preview": "I'm thinking ahead about this: i'm planning a weekend in Goa in December. I was considering it around the 37th planning note."
+          },
+          {
+            "id": "hist_305",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-31T21:02:00+00:00",
+            "formatted_preview": "I may end up doing this: i'm planning a weekend in Goa in December. I was considering it around the 25th planning note."
+          },
+          {
+            "id": "hist_287",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-07-29T15:08:00+00:00",
+            "formatted_preview": "I'm thinking ahead about this: i'm planning a weekend in Goa in December. I was considering it around the 7th planning note."
+          }
+        ],
+        "selected_dictation_id": "hist_371",
+        "find_query": {
+          "text_query": "goa",
+          "date_start": null,
+          "date_end": null,
+          "occasion": null
+        },
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_a8780b38a80c"
+        ],
+        "tools_used": [
+          "find_dictations",
+          "select_dictation_candidate",
+          "polish_dictation"
+        ],
+        "decision": "answer",
+        "reason": "Selected and polished one relevant dictation.",
+        "canonicalized_message": "Polish my Goa weekend planning note for sharing with a friend.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": true,
+              "wants_cross_recall": false
+            }
+          },
+          {
+            "step": "select_dictation_candidate",
+            "source": "fallback",
+            "output": {
+              "error": "Error code: 400 - {'error': {'message': \"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': ''}}"
+            }
+          },
+          {
+            "step": "polish",
+            "source": "llm",
+            "output": "I'm planning a weekend in Goa in December."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 18380.77,
+        "llm_call_count": 4,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 52,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 54,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "plan-travel-itinerary",
+      "message": "I am considering a short trip next month. Based on what I have told you about travel, what kind of itinerary would suit me?",
+      "reply": "Based on what you\u2019ve shared, a short trip to Jaipur would suit your plans for next month. You have considered this destination several times in previous planning notes.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "a8c4dcb3-ee48-4696-ac0c-5af8eb271f8b",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 50th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "398b9bdd-f18f-4ab8-b6fe-ff1621e686df",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 98th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "93f64d11-43a4-4361-857e-7d0985ec6f4f",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 44th planning note. | When: 2026-10-01 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "46e9d57a-0063-474a-b12e-258356d0a829",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 92nd planning note | When: October 2026 | Involving: user"
+          },
+          {
+            "id": "52b59991-64a1-43fc-b59f-83640fc82f53",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month. | Involving: user"
+          },
+          {
+            "id": "fe2d0a7a-3e10-4c5e-bfef-84f0bd51b47a",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, and was considering it around planning note 32 | When: September 2026 | Involving: user"
+          },
+          {
+            "id": "9bfa7176-109f-4a11-8f34-2fb955f8c4f4",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, planning around August 26, 2026 | When: August 26, 2026 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "c8c376b0-c7fd-4a3f-8b14-c666682bfef9",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month | When: 2026-10-01 | Involving: user"
+          },
+          {
+            "id": "42039a9f-8832-4e27-8d33-f306559511e8",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, around October 20, 2026 | When: October 20, 2026 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "7613e032-f324-4efc-83e4-c7a013004a74",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, and this consideration was around the 86th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "25a54cd8-1cbc-4e19-8d26-be83022d6f30",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, having considered it around the 80th planning note. | When: 2026-10-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "f671f9af-24ab-4135-9cd9-b4bc466cdff5",
+            "type": "Memory",
+            "text": "User is considering a short trip to Kochi later in 2026, having thought about it around the 42th planning note. | When: 2026-09-10 | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "I am considering a short trip next month. Based on what I have told you about travel, what kind of itinerary would suit me?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_6b653177b52c"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "I am considering a short trip next month. Based on what I have told you about travel, what kind of itinerary would suit me?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Based on what you\u2019ve shared, a short trip to Jaipur would suit your plans for next month. You have considered this destination several times in previous planning notes."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 58738.3,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 54,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 56,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "plan-ideas-vs-booked",
+      "message": "Which trips have I only considered, and which ones did I actually confirm or book?",
+      "reply": "Based on the available records, you have only considered a short trip to Jaipur. There are no records of any trips that you have confirmed or booked.\n\nMultiple notes indicate you have been weighing this Jaipur trip across different timeframes, mentioning considerations for September 2026, October 2026, and \"next month\" in various planning notes. However, none of these have progressed beyond the consideration stage.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "4001d6c3-375c-4a13-ba41-2a635cf5a4eb",
+            "type": "Memory",
+            "text": "User considered the trip around the 38th planning note. | Involving: user"
+          },
+          {
+            "id": "ef106bf0-e709-4dc5-bd56-834e203ea6a2",
+            "type": "Memory",
+            "text": "User considered the trip around the 56th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "25a54cd8-1cbc-4e19-8d26-be83022d6f30",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, having considered it around the 80th planning note. | When: 2026-10-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "a8c4dcb3-ee48-4696-ac0c-5af8eb271f8b",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 50th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "90c633ba-eb99-41ff-ac22-a05dd589485a",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in September 2026, having considered it around the 74th planning note. | When: 2026-08-05 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "93f64d11-43a4-4361-857e-7d0985ec6f4f",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 44th planning note. | When: 2026-10-01 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "398b9bdd-f18f-4ab8-b6fe-ff1621e686df",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 98th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "46e9d57a-0063-474a-b12e-258356d0a829",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 92nd planning note | When: October 2026 | Involving: user"
+          },
+          {
+            "id": "7613e032-f324-4efc-83e4-c7a013004a74",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, and this consideration was around the 86th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "6c8e7ffd-ce0a-423e-97f8-9845bbe1ee83",
+            "type": "Memory",
+            "text": "User considered a short trip to Kochi around September 18, 2026 | When: 2026-09-18 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "4c598e99-61b7-4480-8b9a-8e95a1ce768b",
+            "type": "Memory",
+            "text": "Assistant is considering a trip to Jaipur and is asking what preferences should shape that trip. | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "567d9617-d18e-4c30-b291-f65c4d73f476",
+            "type": "Memory",
+            "text": "User was considering the trip around the 6th planning note | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "Which trips have I only considered, and which ones did I actually confirm or book?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_7ba5e33333b2"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "Which trips have I only considered, and which ones did I actually confirm or book?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Based on the available records, you have only considered a short trip to Jaipur. There are no records of any trips that you have confirmed or booked.\n\nMultiple notes indicate you have been weighing this Jaipur trip across different timeframes, mentioning considerations for September 2026, October 2026, and \"next month\" in various planning notes. However, none of these have progressed beyond the consideration stage."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 5208.36,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 56,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 58,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "plan-jaipur-prefs",
+      "message": "I'm thinking about Jaipur \u2014 what preferences should shape that trip?",
+      "reply": "I don\u2019t have any specific preferences recorded for your Jaipur trip. The memories indicate you\u2019ve been considering a short trip there in October 2026 (with some notes mentioning \"next month\"), but they do not specify any personal preferences, interests, or requirements that should shape the itinerary.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "4c598e99-61b7-4480-8b9a-8e95a1ce768b",
+            "type": "Memory",
+            "text": "Assistant is considering a trip to Jaipur and is asking what preferences should shape that trip. | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "4a78a9db-41fe-40c4-9a75-0811b34de616",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, having thought about it around September 8, 2026. | When: 2026-09-08 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "a8c4dcb3-ee48-4696-ac0c-5af8eb271f8b",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 50th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "398b9bdd-f18f-4ab8-b6fe-ff1621e686df",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 98th planning note | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "93f64d11-43a4-4361-857e-7d0985ec6f4f",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 44th planning note. | When: 2026-10-01 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "7613e032-f324-4efc-83e4-c7a013004a74",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, and this consideration was around the 86th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "25a54cd8-1cbc-4e19-8d26-be83022d6f30",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, having considered it around the 80th planning note. | When: 2026-10-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "90c633ba-eb99-41ff-ac22-a05dd589485a",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in September 2026, having considered it around the 74th planning note. | When: 2026-08-05 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "fe2d0a7a-3e10-4c5e-bfef-84f0bd51b47a",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, and was considering it around planning note 32 | When: September 2026 | Involving: user"
+          },
+          {
+            "id": "52b59991-64a1-43fc-b59f-83640fc82f53",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month. | Involving: user"
+          },
+          {
+            "id": "46e9d57a-0063-474a-b12e-258356d0a829",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 92nd planning note | When: October 2026 | Involving: user"
+          },
+          {
+            "id": "cc288fa1-b7a4-41ce-9fdc-351f84b3f42c",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026 | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "I'm thinking about Jaipur \u2014 what preferences should shape that trip?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_47a728f4efeb"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "I'm thinking about Jaipur \u2014 what preferences should shape that trip?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "fallback",
+            "output": {
+              "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': 'No explicit user-specific lexical mappings were found in the message.'}}"
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "I don\u2019t have any specific preferences recorded for your Jaipur trip. The memories indicate you\u2019ve been considering a short trip there in October 2026 (with some notes mentioning \"next month\"), but they do not specify any personal preferences, interests, or requirements that should shape the itinerary."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 63687.6,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 58,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 60,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "lexical-name-spell",
+      "message": "How should you spell my name?",
+      "reply": "Your name is spelled **Aaditya**.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "a67f3a6e-c77c-4eeb-9bf7-5c605f1acc7e",
+            "type": "Memory",
+            "text": "User prefers their name to be written as Aaditya | Involving: user"
+          },
+          {
+            "id": "011b3272-e20a-41ae-b959-dddf94545a99",
+            "type": "Memory",
+            "text": "User has an uncle named Vikram who is based in Mysuru | Involving: user, Vikram (user's uncle)"
+          },
+          {
+            "id": "b6d8c977-a82b-430e-9ba3-1ca00ae82af6",
+            "type": "Memory",
+            "text": "My cousin Neha lives in Hyderabad | Involving: Neha (user's cousin)"
+          },
+          {
+            "id": "378f5b6d-367e-4378-9b36-c98bdd052a68",
+            "type": "Memory",
+            "text": "Vikram is the user\u2019s uncle and is based in Mysuru. | Involving: Vikram (user\u2019s uncle)"
+          },
+          {
+            "id": "5172abfd-adf5-41d8-ace9-35518da1706f",
+            "type": "Memory",
+            "text": "Vikram is the user\u2019s uncle and is based in Mysuru. | Involving: Vikram (user\u2019s uncle)"
+          },
+          {
+            "id": "61b50d1f-1826-48ec-a838-7d91be91e39c",
+            "type": "Memory",
+            "text": "User has a brother named Arjun who lives in Bengaluru | Involving: Arjun (user's brother)"
+          },
+          {
+            "id": "9a993882-2535-49e6-b497-eba63aa1ffa7",
+            "type": "Memory",
+            "text": "User prefers short, direct meeting notes."
+          },
+          {
+            "id": "ede5f619-82fb-43a4-9dbe-9da0e918648b",
+            "type": "Memory",
+            "text": "User has a cousin named Neha who lives in Hyderabad | Involving: user, Neha"
+          },
+          {
+            "id": "0c6a164b-6f40-4a99-9df4-f968210d157a",
+            "type": "Memory",
+            "text": "Vikram is the user's uncle and lives in Mysuru; the user mentioned this during a conversation on day 3. | Involving: user, Vikram (user's uncle)"
+          },
+          {
+            "id": "504eea36-40d3-4fbe-bd0f-7644ee04721b",
+            "type": "Memory",
+            "text": "Vikram is the user's uncle and is based in Mysuru | Involving: Vikram (user's uncle)"
+          },
+          {
+            "id": "f7be8e67-00ef-45e9-bece-082b4ae8d194",
+            "type": "Memory",
+            "text": "User's uncle is Vikram, who is currently in Mysuru, and the user mentioned this during conversation on day 4. | Involving: Vikram (user's uncle)"
+          },
+          {
+            "id": "699e0585-9892-4c90-882a-36c76019ee45",
+            "type": "Memory",
+            "text": "Vikram is the user's uncle and lives in Mysuru | Involving: Vikram (user's uncle)"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "How should you spell my name?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_487804d79d48"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "answer",
+        "reason": "Cross-recall: synthesized from 12 Hindsight memories (Fact/Preference/Episode when typed).",
+        "canonicalized_message": "How should you spell my name?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "synthesize",
+            "source": "llm",
+            "output": "Your name is spelled **Aaditya**."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 9073.3,
+        "llm_call_count": 3,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 60,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 62,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "find-polish-trivandrum",
+      "message": "Find my note that mentions Trivandrum and polish it using my place-name preferences.",
+      "reply": "I used your note from Wednesday, August 19, 2026 at 14:00 UTC.\n\nI\u2019m planning a short weekend trip to Thiruvananthapuram in November.",
+      "trace": {
+        "wants_dictation": true,
+        "wants_cross_recall": false,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [
+          {
+            "observed": "Trivandrum",
+            "preferred": "Thiruvananthapuram",
+            "kind": "terminology"
+          }
+        ],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "17caea73-64bd-4537-8ff2-4277ad5fe69d",
+            "type": "Memory",
+            "text": "User plans a short weekend trip to Trivandrum in November | When: 2026-08-19 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "28bcb793-6699-4e38-8eb5-90c25627d281",
+            "type": "Memory",
+            "text": "User is planning a weekend trip to Goa in December and was considering it around the 1th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "7613e032-f324-4efc-83e4-c7a013004a74",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, and this consideration was around the 86th planning note. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "25a54cd8-1cbc-4e19-8d26-be83022d6f30",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026, having considered it around the 80th planning note. | When: 2026-10-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "937f8536-db45-4d07-9eab-ea9be5074a91",
+            "type": "Memory",
+            "text": "User plans a weekend trip to Goa in December 2026, considering it around December 7, 2026 | Involving: user"
+          },
+          {
+            "id": "08843b0a-69c4-4133-813b-204a6a3cd6cb",
+            "type": "Memory",
+            "text": "User plans a weekend trip to Goa in December | When: December 2026 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "915b374a-5d0b-45bc-8877-f046ed737ecc",
+            "type": "Memory",
+            "text": "User plans a weekend trip to Goa in December | When: December 2026 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "46e9d57a-0063-474a-b12e-258356d0a829",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, having considered it around the 92nd planning note | When: October 2026 | Involving: user"
+          },
+          {
+            "id": "c15ce4d3-e274-42b8-b966-392803221e83",
+            "type": "Memory",
+            "text": "User prefers to use Thiruvananthapuram instead of Trivandrum | When: 2026-08-20 | Involving: user"
+          },
+          {
+            "id": "b3527130-408a-45c5-8961-ea950401908c",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur in October 2026. | When: October 2026 | Involving: user"
+          },
+          {
+            "id": "225e920b-ce9d-485b-bdb9-e331b481a047",
+            "type": "Memory",
+            "text": "User considered planning a weekend in Goa in December around the 85th planning note | When: 2026-08-06 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "42039a9f-8832-4e27-8d33-f306559511e8",
+            "type": "Memory",
+            "text": "User is considering a short trip to Jaipur next month, around October 20, 2026 | When: October 20, 2026 | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "general cleanup Planning a short weekend trip to Trivandrum in November.",
+        "candidates": [
+          {
+            "id": "hist_506",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-19T14:00:00+00:00",
+            "formatted_preview": "Planning a short weekend trip to Trivandrum in November."
+          },
+          {
+            "id": "lexical_005",
+            "score": 0.75,
+            "evidence": [
+              "fts"
+            ],
+            "created_at": "2026-08-20T20:10:00+00:00",
+            "formatted_preview": "Please use Thiruvananthapuram instead of Trivandrum."
+          }
+        ],
+        "selected_dictation_id": "hist_506",
+        "find_query": {
+          "text_query": "trivandrum",
+          "date_start": null,
+          "date_end": null,
+          "occasion": null
+        },
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_a280f8ecaa78"
+        ],
+        "tools_used": [
+          "find_dictations",
+          "select_dictation_candidate",
+          "polish_dictation"
+        ],
+        "decision": "answer",
+        "reason": "Selected and polished one relevant dictation.",
+        "canonicalized_message": "Find my note that mentions Thiruvananthapuram and polish it using my place-name preferences.",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": true,
+              "wants_cross_recall": true
+            }
+          },
+          {
+            "step": "select_dictation_candidate",
+            "source": "fallback",
+            "output": {
+              "error": "Error code: 400 - {'error': {'message': \"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': ''}}"
+            }
+          },
+          {
+            "step": "polish",
+            "source": "llm",
+            "output": "I\u2019m planning a short weekend trip to Trivandrum in November."
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 83134.45,
+        "llm_call_count": 4,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 62,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 64,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "abstain-passport",
+      "message": "What is my passport number?",
+      "reply": "I don't have enough in your history to answer that from what I know.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "1025ac56-1119-4693-a9d4-99e7d52f6383",
+            "type": "Memory",
+            "text": "User is passing thought number 35. | When: 2026-08-18 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "3990cd21-9f01-45c4-9328-35e478bcda1a",
+            "type": "Memory",
+            "text": "User had a passing thought number 45 | When: 2026-08-19 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "644f6c20-5b4c-44df-bc6f-6a4ba68ad51e",
+            "type": "Memory",
+            "text": "Kivi2 had a passing thought numbered 42. | When: 2026-09-10 | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "c3d8b9a9-6715-4b51-84bb-6c307d2e4ed5",
+            "type": "Memory",
+            "text": "User has activity log entry number 50. | When: 2026-09-10 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "46158629-d8ce-4d39-9ee4-0f968f928ad5",
+            "type": "Memory",
+            "text": "Kivi2 (golden_goose_eval_user) had a passing thought, number 38 | When: 2026-09-10 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "c87f7647-762a-4297-8c0e-92be07e6d0e8",
+            "type": "Memory",
+            "text": "User logged activity entry number 40. | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "fd4ca08b-5de6-4f73-b943-446496e7257b",
+            "type": "Memory",
+            "text": "User had a passing thought, labeled 37. | When: 2026-08-18 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "25d71260-3404-469b-aa42-196c852ccad9",
+            "type": "Memory",
+            "text": "User expresses a passing thought, number 12 | When: 2026-08-16 | Involving: user"
+          },
+          {
+            "id": "4a05023c-ee13-4b8e-9e9f-d41762782dbc",
+            "type": "Memory",
+            "text": "Vikram, the user's uncle, is currently in Mysuru | When: 2026-09-08 | Involving: Vikram (user's uncle)"
+          },
+          {
+            "id": "ee91478a-868c-4e41-bb86-4fc8674de19b",
+            "type": "Memory",
+            "text": "Neha is the user's cousin and is currently in Hyderabad | When: 2026-09-08 | Involving: Neha (user's cousin)"
+          },
+          {
+            "id": "551d04a3-c793-4ec9-8f07-0f4906796f36",
+            "type": "Memory",
+            "text": "Kivi2 logged activity entry 25 | When: Wednesday, September 09, 2026 | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "451b02c9-34b9-47b3-90e7-784cc47937a6",
+            "type": "Memory",
+            "text": "User acknowledges receipt and passes thought 21 | When: 2026-08-17 | Involving: golden_goose_eval_user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "What is my passport number?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_97b0052fc9d3"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "abstain",
+        "reason": "Recalled 12 memories but none support an answer to this question.",
+        "canonicalized_message": "What is my passport number?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 3691.82,
+        "llm_call_count": 2,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 64,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 66,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    },
+    {
+      "id": "abstain-mars",
+      "message": "Have I mentioned the Mars colony habitat budget?",
+      "reply": "I don't have enough in your history to answer that from what I know.",
+      "trace": {
+        "wants_dictation": false,
+        "wants_cross_recall": true,
+        "memories_retained": [],
+        "memories_ignored": [],
+        "memories_updated": [],
+        "applied_preferences": [],
+        "semantic_retain": false,
+        "semantic_retain_preview": null,
+        "memories_considered": [
+          {
+            "id": "2e7b0369-ca2a-41f7-91cd-0edbbe70ca54",
+            "type": "Memory",
+            "text": "The preference about crowded tourist attractions was mentioned during planning on day 5 | When: 2026-09-13 | Involving: user"
+          },
+          {
+            "id": "5b0895a2-85e6-4a0c-aab7-52be9b474897",
+            "type": "Memory",
+            "text": "User does not like crowded tourist attractions | Involving: user"
+          },
+          {
+            "id": "1c4e8063-872a-4b6e-9745-7cf9927604cb",
+            "type": "Memory",
+            "text": "User mentioned this during conversation on day 3 | Involving: user"
+          },
+          {
+            "id": "750a8d58-7126-4d74-9624-4b5d72a26ecb",
+            "type": "Memory",
+            "text": "User was planning something on September 9, 2026, during which the preference for window seats was mentioned. | When: 2026-09-09 | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "4852fddb-4c11-4e5f-866e-72e03170e8a3",
+            "type": "Memory",
+            "text": "Kivi2 mentioned Arjun's residence during a conversation on day 3 | When: 2026-09-08 | Involving: Kivi2 (golden_goose_eval_user)"
+          },
+          {
+            "id": "9659042e-4d50-4afe-93bf-815a1cd603ce",
+            "type": "Memory",
+            "text": "User was considering the trip around the 68th planning note | Involving: user"
+          },
+          {
+            "id": "63409da1-170a-4771-b460-3f1ec76b8aa3",
+            "type": "Memory",
+            "text": "User mentioned Arjun's residence during their conversation on day 2. | When: Wednesday, September 09, 2026 | Involving: user"
+          },
+          {
+            "id": "5d2c9cdd-959c-4e3c-8e30-f577eb5f542d",
+            "type": "Memory",
+            "text": "User does not like crowded tourist attractions | Involving: golden_goose_eval_user"
+          },
+          {
+            "id": "7cbe7a8e-6437-4072-b348-dfa6b9890fe1",
+            "type": "Memory",
+            "text": "User was planning something on day 8 | Involving: user"
+          },
+          {
+            "id": "b305c6e2-57af-45a3-b5b1-ee3da86b7393",
+            "type": "Memory",
+            "text": "User was planning something on day 8 | Involving: user"
+          },
+          {
+            "id": "ad4a0f7e-489b-468d-b38f-1122dac69ac5",
+            "type": "Memory",
+            "text": "User was planning something on day 6 | Involving: user"
+          },
+          {
+            "id": "183ac939-dba9-402d-8594-060fc91fa6f4",
+            "type": "Memory",
+            "text": "User was planning something on day 6 | Involving: user"
+          }
+        ],
+        "retrieval_backend": "hindsight",
+        "retrieval_query": "Have I mentioned the Mars colony habitat budget?",
+        "candidates": [],
+        "selected_dictation_id": null,
+        "find_query": null,
+        "source_dictation_id": null,
+        "source_interactions": [
+          "i_d9a62bc35217"
+        ],
+        "tools_used": [
+          "hindsight_recall"
+        ],
+        "decision": "abstain",
+        "reason": "Recalled 12 memories but none support an answer to this question.",
+        "canonicalized_message": "Have I mentioned the Mars colony habitat budget?",
+        "llm_calls": [
+          {
+            "step": "lexical_extract",
+            "source": "llm",
+            "output": {
+              "mappings": []
+            }
+          },
+          {
+            "step": "interpret",
+            "source": "llm",
+            "output": {
+              "wants_dictation": false,
+              "wants_cross_recall": true
+            }
+          }
+        ]
+      },
+      "metrics": {
+        "elapsed_ms": 23261.58,
+        "llm_call_count": 2,
+        "retain_call_count": 0,
+        "db_before": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 66,
+          "corpus_ingestions": 506
+        },
+        "db_after": {
+          "dictations": 506,
+          "lexical_mappings": 4,
+          "interactions": 68,
+          "corpus_ingestions": 506
+        },
+        "db_delta": {
+          "dictations": 0,
+          "lexical_mappings": 0,
+          "corpus_ingestions": 0,
+          "interactions": 2
+        },
+        "cost_usd": 0.0
+      },
+      "ok": true
+    }
+  ]
+}

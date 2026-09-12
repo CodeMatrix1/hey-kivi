@@ -67,7 +67,7 @@ def create_generator(settings: Settings | None = None) -> GenerateFn:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
-            max_completion_tokens=1200,
+            max_completion_tokens=1000,
             response_format={"type": "json_object"},
         )
         content = completion.choices[0].message.content

@@ -6,6 +6,7 @@ import re
 from typing import Any
 
 from hindsight_pipeline_2.kivi.capabilities.trace_utils import memory_card, record_llm
+from hindsight_pipeline_2.kivi.conversation_context import user_lines_from_continuity_block
 from hindsight_pipeline_2.kivi.corpus.text_cleanup import strip_corpus_metadata_noise
 from hindsight_pipeline_2.kivi.config import SYNTHESIZE_SYSTEM
 from hindsight_pipeline_2.kivi.models import DecisionTrace
@@ -105,6 +106,7 @@ def synthesize_answer(
     query: str,
     recalled: list[dict[str, Any]],
     text_llm: Any,
+    continuity_context: str | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Build a user-facing answer from recalled memories."""
     cards = [memory_card(r) for r in recalled[:6]]
@@ -112,7 +114,13 @@ def synthesize_answer(
         f"- [{c.get('type') or 'Memory'}] {c.get('text', '')[:400]}" for c in cards
     )
     if text_llm is not None:
-        user = f"Question: {query}\n\nMemories:\n{bullets}"
+        user_parts = []
+        if continuity_context:
+            user_parts.append(continuity_context)
+            user_parts.append("")
+        user_parts.append(f"Question: {query}")
+        user_parts.append(f"Memories:\n{bullets}")
+        user = "\n".join(user_parts)
         try:
             text = text_llm(SYNTHESIZE_SYSTEM, user).strip()
             return text, {"source": "llm", "output": text}
@@ -136,6 +144,7 @@ def run_cross_recall(
     selection_llm: Any = None,
     store: Any | None = None,
     trace: DecisionTrace,
+    continuity_context: str | None = None,
 ) -> list[str]:
     """Recall prior semantic memories and append a synthesized reply part."""
     parts: list[str] = []
@@ -143,6 +152,9 @@ def run_cross_recall(
     recall_limit = 32 if getattr(memory, "backend_name", None) == "stub" else 12
     echo_bodies = {canonical.strip(), query.strip(), raw.strip()}
     current_dictation = trace.source_dictation_id
+    current_interaction = (
+        trace.source_interactions[0] if trace.source_interactions else None
+    )
 
     def _filter_recalled(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
         kept: list[dict[str, Any]] = []
@@ -153,6 +165,11 @@ def run_cross_recall(
                 or str(r.get("id") or "") == f"dict_{current_dictation}"
             ):
                 continue
+            if current_interaction and (
+                meta.get("interaction_id") == current_interaction
+                or str(r.get("id") or "") == f"chat_{current_interaction}"
+            ):
+                continue
             raw_text = str(r.get("text") or "")
             body = _memory_body(raw_text)
             if body in echo_bodies:
@@ -161,12 +178,26 @@ def run_cross_recall(
                 continue
             if current_dictation and f"source_dictation_id={current_dictation}" in raw_text:
                 continue
+            if current_interaction and f"source_interaction_id={current_interaction}" in raw_text:
+                continue
             kept.append(r)
         return kept
 
     recalled = _filter_recalled(memory.recall(user_id, query, limit=recall_limit))
     if not recalled and getattr(memory, "backend_name", None) == "stub":
         recalled = _filter_recalled(memory.recall(user_id, "", limit=recall_limit))
+
+    session_lines = user_lines_from_continuity_block(continuity_context)
+    session_memories = [
+        {
+            "id": f"session_{idx}",
+            "text": line,
+            "metadata": {"kivi_session": True},
+        }
+        for idx, line in enumerate(session_lines)
+    ]
+    if session_memories:
+        recalled = session_memories + recalled
     backend = getattr(memory, "backend_name", "none")
     trace.retrieval_backend = "hindsight" if backend in {"hindsight", "stub"} else "none"
     trace.retrieval_query = query
@@ -191,7 +222,9 @@ def run_cross_recall(
         parts.append("I don't have enough in your history to answer that from what I know.")
         return parts
 
-    synth, synth_meta = synthesize_answer(query, recalled, text_llm)
+    synth, synth_meta = synthesize_answer(
+        query, recalled, text_llm, continuity_context=continuity_context
+    )
     record_llm(
         trace,
         "synthesize",

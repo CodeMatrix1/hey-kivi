@@ -369,7 +369,8 @@ def run_dictation(
         trace.reason = "Selected dictation could not be polished."
         parts.append("I found relevant notes but couldn't prepare them.")
         return parts
-    trace.selected_dictation_id = str(polished_notes[0]["dictation_id"])
+    trace.selected_dictation_ids = [str(note["dictation_id"]) for note in polished_notes]
+    trace.selected_dictation_id = trace.selected_dictation_ids[0]
     trace.decision = "answer"
     if len(polished_notes) == 1:
         trace.reason = "Selected and polished one relevant dictation."

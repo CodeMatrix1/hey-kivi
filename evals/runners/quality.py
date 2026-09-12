@@ -220,7 +220,7 @@ def run_suite(
     category: str | None = None,
     case_id: str | None = None,
 ) -> dict[str, Any]:
-    os.environ["KIVI_SAVE_CHATS"] = "true"
+    os.environ["KIVI_CHAT"] = "true"
     filtered = cases
     if category:
         filtered = [c for c in filtered if c.get("category") == category]

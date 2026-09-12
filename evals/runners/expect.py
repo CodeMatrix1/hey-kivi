@@ -104,6 +104,8 @@ def check_expect(
             low = text.lower()
             if "source_dictation_id=" in low:
                 continue
+            if "kivi_chat=true" in low or "source_interaction_id=" in low:
+                continue
             if "kivi_memory" not in low and "source=seed" not in low:
                 if not text.strip().startswith("["):
                     continue

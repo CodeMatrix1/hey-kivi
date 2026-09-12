@@ -104,6 +104,7 @@ class DecisionTrace(BaseModel):
     # Dictation find / polish
     candidates: list[dict[str, Any]] = Field(default_factory=list)
     selected_dictation_id: str | None = None
+    selected_dictation_ids: list[str] = Field(default_factory=list)
     find_query: dict[str, Any] | None = None
     # Dictation created from this chat turn's user message (always set on chat)
     source_dictation_id: str | None = None

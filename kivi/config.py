@@ -105,12 +105,16 @@ discussed before. Prior context must actually be needed.
 
 ## Both true
 
-Flags are independent. Set both when the user needs a specific past artifact
-AND other prior context.
+Flags are independent — never clear one flag because the other is true.
+Set both when the user needs a specific past artifact AND synthesized prior context.
 
-Example:
-"Find my note from yesterday and tell me what we decided about the project."
-→ wants_dictation = true, wants_cross_recall = true
+Examples:
+- "Find my note from yesterday and tell me what we decided about the project."
+  → wants_dictation = true, wants_cross_recall = true
+- "Find my note about the payments review and summarize what I've said about it."
+  → wants_dictation = true, wants_cross_recall = true
+- "Find my Slack dictation about API rate limits and polish it for the meeting."
+  → wants_dictation = true, wants_cross_recall = false (artifact only, no recall ask)
 
 If they ask for a specific past artifact (even to extract info from it),
 use wants_dictation. If they only want information from history, use

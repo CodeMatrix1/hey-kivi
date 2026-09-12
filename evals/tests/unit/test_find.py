@@ -230,6 +230,32 @@ def test_fts_migration_backfills_existing_dictations(tmp_path: Path):
     assert [r["id"] for r in store.find("u", text_query="migration")] == ["legacy"]
 
 
+def test_legacy_global_id_pk_migrates_to_composite_pk(tmp_path: Path):
+    """Legacy dictations with a global id PK are migrated to (user_id, id)."""
+    db = tmp_path / "legacy_pk.sqlite3"
+    with sqlite3.connect(db) as conn:
+        conn.execute(
+            "CREATE TABLE dictations (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, asr TEXT NOT NULL, formatted TEXT NOT NULL, created_at TEXT NOT NULL, extra_json TEXT DEFAULT '{}')"
+        )
+        conn.execute(
+            "INSERT INTO dictations VALUES ('shared', 'user_a', 'alpha', 'Alpha note.', '2026-09-04T10:00:00+00:00', '{}')"
+        )
+    store = DictationStore(db)
+    store.add_dictation(
+        DictationRecord(
+            id="shared",
+            user_id="user_b",
+            asr="beta",
+            formatted="Beta note.",
+            created_at="2026-09-04T11:00:00+00:00",
+        )
+    )
+    assert store.get("user_a", "shared") is not None
+    assert store.get("user_b", "shared") is not None
+    assert [r["id"] for r in store.find("user_a", text_query="alpha")] == ["shared"]
+    assert [r["id"] for r in store.find("user_b", text_query="beta")] == ["shared"]
+
+
 def test_clear_user_clears_source_and_fts_index(store: DictationStore):
     """A user reset removes both source rows and their searchable FTS entries."""
     add(store, "gone", "Delete this indexed record.", "2026-09-04T10:00:00+00:00")
